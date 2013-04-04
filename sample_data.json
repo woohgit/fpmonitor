@@ -1,0 +1,20 @@
+[
+    {
+        "pk": 1,
+        "model": "auth.user",
+        "fields": {
+            "username": "admin",
+            "first_name": "Default",
+            "last_name": "Admin",
+            "is_active": true,
+            "is_superuser": true,
+            "is_staff": true,
+            "last_login": "2013-01-12 10:11:11Z",
+            "groups": [],
+            "user_permissions": [],
+            "password": "sha1$702d7$669a2018ab0c5d7c898cdfde0ae9de415fb00cbb",
+            "email": "webadmin@wooh.hu",
+            "date_joined": "2013-02-01 19:16:06Z"
+        }
+    },
+]

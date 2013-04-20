@@ -16,7 +16,14 @@ fi
 
 source virtualenv/bin/activate
 
-pip install -r requirements.txt
+# pip should fail, so to be sure we can install all deps
+while true;
+do
+  pip install -r requirements.txt
+  if [ "$?" -eq 0 ]; then
+    break;
+  fi
+done
 
 if ./manage.py validate ; then
     echo "django settings OK"

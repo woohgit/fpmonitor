@@ -1,2 +1,5 @@
 fpmonitor.db
 virtualenv/
+.DS_Store
+*.pyc
+reports/

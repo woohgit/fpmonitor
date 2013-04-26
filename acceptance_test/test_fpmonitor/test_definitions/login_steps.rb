@@ -46,12 +46,12 @@ end
 
 
 def log_in
-    visit "http://127.0.0.1:8000/login"
+    visit "http://192.168.56.1:8000/login"
     fill_in "username", :with => "admin"
     fill_in "password", :with => "admin"
     click_button("signin")
 end
 
 def log_out
-    visit 'http://127.0.0.1:8000/logout'
+    visit 'http://192.168.56.1:8000/logout'
 end

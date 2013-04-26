@@ -1,11 +1,12 @@
-from helpers import create_adam, login_adam, ADAM_PASSWORD, ADAM_USERNAME
+from helpers import create_adam, create_eva, login_adam, ADAM_PASSWORD, ADAM_USERNAME
 import fpmonitor.api
+from fpmonitor.models import Node
 from mock import patch
 
 from django.contrib.auth.models import User
 from django.test import TestCase
 
-__all__ = ['LoginTestCase', 'WebSiteTestCase']
+__all__ = ['LoginTestCase', 'NodeTestCase', 'WebSiteTestCase']
 
 
 class WebSiteTestCase(TestCase):
@@ -47,3 +48,31 @@ class LoginTestCase(TestCase):
     def test_logout(self):
         response = self.client.get('/logout')
         self.assertRedirects(response, '/login', status_code=302)
+
+
+class NodeTestCase(TestCase):
+    def setUp(self):
+        self.owner = create_adam()
+        self.other_owner = create_eva()
+        self.node_name = 'name_01'
+        self.created_node = Node.create_node(self.owner, self.node_name)
+
+    def test_get_nodes_shuld_return_empty_when_no_nodes_under_owner(self):
+        result = Node.get_nodes(self.other_owner)
+        self.assertEquals(len(result), 0)
+
+    def test_get_nodes_shuld_return_nodes_when_nodes_under_owner(self):
+        result = Node.get_nodes(self.owner)
+        self.assertEquals(len(result), 1)
+
+    def test_node_owner(self):
+        self.assertEquals(self.created_node.owner, self.owner)
+
+    def test_node_name(self):
+        self.assertEquals(self.created_node.name, self.node_name)
+
+    def test_node_maintenance_mode(self):
+        self.assertFalse(self.created_node.maintenance_mode)
+
+    def test_node_registered_at(self):
+        self.assertTrue(self.created_node.registered_at)

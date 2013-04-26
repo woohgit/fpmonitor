@@ -22,3 +22,12 @@ class Node(models.Model):
     def create_node(cls, owner, name):
         node = Node.objects.create(owner=owner, name=name)
         return node
+
+    @classmethod
+    def delete_node(cls, pk, request):
+        try:
+            node = Node.objects.get(pk=pk, owner=request.user)
+            node.delete()
+            return True
+        except:
+            return False

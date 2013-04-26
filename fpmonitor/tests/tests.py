@@ -1,7 +1,7 @@
 from helpers import create_adam, create_eva, login_adam, ADAM_PASSWORD, ADAM_USERNAME
 import fpmonitor.api
 from fpmonitor.models import Node
-from mock import patch
+from mock import patch, Mock
 
 from django.contrib.auth.models import User
 from django.test import TestCase
@@ -76,3 +76,23 @@ class NodeTestCase(TestCase):
 
     def test_node_registered_at(self):
         self.assertTrue(self.created_node.registered_at)
+
+    def test_delete_fails_if_node_not_exists(self):
+        """it should return False when the node does not exists
+
+        """
+        request = Mock()
+        request.user = self.owner
+        result = Node.delete_node(5, request)
+        self.assertFalse(result)
+
+    def test_delete_succeeds(self):
+        """it should return true if the node exists and the owner matches with the node
+
+        """
+        request = Mock()
+        request.user = self.owner
+        result = Node.delete_node(self.created_node.id, request)
+        self.assertTrue(result)
+        nodes = Node.get_nodes(self.owner)
+        self.assertEquals(len(nodes), 0)

@@ -1,7 +1,7 @@
 from datetime import datetime
 from fpmonitor.consts import *
 from django.contrib.auth.models import User
-from django.db import models
+from django.db import models, IntegrityError
 
 
 class Node(models.Model):
@@ -22,6 +22,9 @@ class Node(models.Model):
 
     @classmethod
     def create_node(cls, owner, name):
+        n = Node.objects.filter(owner=owner, name=name)
+        if n:
+            raise IntegrityError('This node name is taken')
         node = Node.objects.create(owner=owner, name=name, os_type='Linux', os_version='Ubuntu')
         return node
 

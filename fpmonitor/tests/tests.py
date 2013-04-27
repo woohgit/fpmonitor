@@ -6,6 +6,7 @@ from fpmonitor.models import Node
 from mock import patch, Mock
 
 from django.contrib.auth.models import User
+from django.db import IntegrityError
 from django.test import TestCase
 from django.conf import settings
 
@@ -70,6 +71,10 @@ class NodeTestCase(TestCase):
         self.other_owner = create_eva()
         self.node_name = 'name_01'
         self.created_node = Node.create_node(self.owner, self.node_name)
+
+    def test_create_node_raises_exception_when_name_and_owner_is_the_same(self):
+        with self.assertRaises(IntegrityError):
+            Node.create_node(self.owner, self.node_name)
 
     def test_get_nodes_shuld_return_empty_when_no_nodes_under_owner(self):
         result = Node.get_nodes(self.other_owner)

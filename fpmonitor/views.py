@@ -20,11 +20,6 @@ def index(request):
     return render(request, 'index.html', {'username': request.user.username, 'node_list': node_list})
 
 
-@login_required
-def secret_place(home):
-    return HttpResponse("OK %s" % request)
-
-
 def user_login(request):
     if request.method == 'GET':
         return render(request, 'login.html')

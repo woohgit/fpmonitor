@@ -17,7 +17,7 @@ class WebSiteTestCase(TestCase):
         self.assertRedirects(response, '/login', status_code=302)
 
     def test_login_required_return_302(self):
-        response = self.client.post('/secret_place', {'key': 'value'})
+        response = self.client.post('/index', {'key': 'value'})
         self.assertEquals(response.status_code, 302)
 
     def test_default_page_redirects_if_loggedin(self):

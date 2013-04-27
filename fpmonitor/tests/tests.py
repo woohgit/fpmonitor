@@ -1,4 +1,4 @@
-from helpers import create_adam, create_eva, login_adam, ADAM_PASSWORD, ADAM_USERNAME
+from helpers import create_adam, create_eva, login_adam, ADAM_PASSWORD, ADAM_USERNAME, EVA_USERNAME, EVA_PASSWORD
 import fpmonitor.api
 from fpmonitor.test_api.test_api import create_nodes
 
@@ -47,6 +47,16 @@ class LoginTestCase(TestCase):
         """
         response = self.client.post('/login', {'username': ADAM_USERNAME, 'password': 'whatever'})
         self.assertEquals(response.status_code, 200)
+        self.assertContains(response, "Invalid")
+
+    def test_login_unsuccessful_when_inactive(self):
+        """unsuccessful login should reload the login page with 200 response code
+
+        """
+        create_eva()
+        response = self.client.post('/login', {'username': EVA_USERNAME, 'password': EVA_PASSWORD})
+        self.assertEquals(response.status_code, 200)
+        self.assertContains(response, "Inactive")
 
     def test_logout(self):
         response = self.client.get('/logout')

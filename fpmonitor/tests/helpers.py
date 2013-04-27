@@ -15,7 +15,7 @@ def create_adam():
     user = User.objects.create_user(username=ADAM_USERNAME, password=ADAM_PASSWORD, email=ADAM_EMAIL)
     user.first_name = 'Adam'
     user.is_active = True
-    user.is_staff = False
+    user.is_staff = True
     user.save()
     return user
 
@@ -23,7 +23,7 @@ def create_adam():
 def create_eva():
     user = User.objects.create_user(username=EVA_USERNAME, password=EVA_PASSWORD, email=EVA_EMAIL)
     user.first_name = 'Eva'
-    user.is_active = True
+    user.is_active = False
     user.is_staff = False
     user.save()
     return user

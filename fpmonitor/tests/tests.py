@@ -127,7 +127,7 @@ class TestApiTestCase(TestCase):
         nodes = Node.objects.filter(owner=self.owner)
         self.assertEquals(len(nodes), 0)
 
-    def lofasz(self):
+    def test_tets_api_cleanup_nodes_should_delete_all_nodes(self):
         self.client.get('/test_api/create_nodes/%s/' % self.nodes_to_create)
         response = self.client.get('/test_api/cleanup_nodes')
         self.assertEquals(response.status_code, 200)

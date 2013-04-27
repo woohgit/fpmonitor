@@ -26,6 +26,7 @@ class TestSuiteRunner(DjangoTestSuiteRunner):
                 '%s/lib/*' % os.environ['VIRTUAL_ENV'],  # libraries
                 '%s/src/*' % os.environ['VIRTUAL_ENV'],  # source libraries
                 '*/tests*',  # all tests
+                'config/*',  # all configs
             ]
             self.coverage = coverage(branch=True, omit=omit_list)
             self.coverage_format = getattr(settings, 'TEST_COVERAGE_FORMAT', 'xml')

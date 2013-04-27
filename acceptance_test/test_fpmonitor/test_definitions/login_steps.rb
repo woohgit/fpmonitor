@@ -1,3 +1,10 @@
+After do |scenario|
+    if(scenario.failed?)
+        page.driver.browser.save_screenshot("reports/#{scenario.__id__}.png")
+        embed("#{scenario.__id__}.png", "image/png", "SCREENSHOT")
+    end
+end
+
 Given /^I am not logged in$/ do
     log_out
 end

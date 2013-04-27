@@ -1,4 +1,4 @@
-Feature: Login
+Feature: Index
 
 Scenario: I see my nodes
     Given I am logged in

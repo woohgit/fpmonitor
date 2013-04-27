@@ -24,9 +24,9 @@ def user_login(request):
     if request.method == 'GET':
         return render(request, 'login.html')
     else:
-        username = request.POST['username']
-        password = request.POST['password']
         try:
+            username = request.POST['username']
+            password = request.POST['password']
             user = authenticate(username=username, password=password)
             if user is not None:
                 if user.is_active:
@@ -36,10 +36,8 @@ def user_login(request):
                     return render(request, 'login.html', {'error': True, 'inactive_login': True})
             else:
                 return render(request, 'login.html', {'error': True, 'failed_login': True})
-
-                # TODO: wooh - invalid login
         except Exception as e:
-            return HttpResponse("NOK %s" % request, 402)
+            return HttpResponse("NOK %s" % request, status=402)
 
 
 def user_logout(request):

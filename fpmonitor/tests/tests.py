@@ -50,13 +50,14 @@ class LoginTestCase(TestCase):
         self.assertContains(response, "Invalid")
 
     def test_login_unsuccessful_when_inactive(self):
-        """unsuccessful login should reload the login page with 200 response code
-
-        """
         create_eva()
         response = self.client.post('/login', {'username': EVA_USERNAME, 'password': EVA_PASSWORD})
         self.assertEquals(response.status_code, 200)
         self.assertContains(response, "Inactive")
+
+    def test_login_fails_on_exception(self):
+        response = self.client.post('/login', {'username': EVA_USERNAME})
+        self.assertEquals(response.status_code, 402)
 
     def test_logout(self):
         response = self.client.get('/logout')

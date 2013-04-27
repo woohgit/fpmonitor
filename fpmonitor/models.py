@@ -43,5 +43,5 @@ class Node(models.Model):
             return 'info'
         elif self.status == STATUS_WARNING:
             return 'warning'
-        elif self.status == STATUS_ERROR:
+        else:
             return 'error'

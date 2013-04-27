@@ -1,4 +1,5 @@
 from datetime import datetime
+from fpmonitor.consts import *
 from django.contrib.auth.models import User
 from django.db import models
 
@@ -13,6 +14,7 @@ class Node(models.Model):
     os_version = models.CharField(max_length=250)
     kernel_version = models.CharField(max_length=250)
     maintenance_mode = models.BooleanField(default=False)
+    status = models.PositiveIntegerField(choices=STATUS_CHOICES, default=STATUS_UNKNOWN)
 
     @classmethod
     def get_nodes(cls, owner):
@@ -20,7 +22,7 @@ class Node(models.Model):
 
     @classmethod
     def create_node(cls, owner, name):
-        node = Node.objects.create(owner=owner, name=name)
+        node = Node.objects.create(owner=owner, name=name, os_type='Linux', os_version='Ubuntu')
         return node
 
     @classmethod
@@ -31,3 +33,15 @@ class Node(models.Model):
             return True
         except:
             return False
+
+    def get_status_text(self):
+        if self.status == STATUS_OK:
+            return 'ok'
+        elif self.status == STATUS_UNKNOWN:
+            return 'unknown'
+        elif self.status == STATUS_INFO:
+            return 'info'
+        elif self.status == STATUS_WARNING:
+            return 'warning'
+        elif self.status == STATUS_ERROR:
+            return 'error'

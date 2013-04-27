@@ -1,7 +1,7 @@
 from helpers import create_adam, create_eva, login_adam, ADAM_PASSWORD, ADAM_USERNAME, EVA_USERNAME, EVA_PASSWORD
 import fpmonitor.api
 from fpmonitor.test_api.test_api import create_nodes
-
+from fpmonitor.consts import *
 from fpmonitor.models import Node
 from mock import patch, Mock
 
@@ -99,6 +99,31 @@ class NodeTestCase(TestCase):
         request.user = self.owner
         result = Node.delete_node(5, request)
         self.assertFalse(result)
+
+    def test_node_get_status_text_unknown(self):
+        self.created_node.status = STATUS_UNKNOWN
+        result = self.created_node.get_status_text()
+        self.assertTrue(result, 'unknown')
+
+    def test_node_get_status_text_ok(self):
+        self.created_node.status = STATUS_OK
+        result = self.created_node.get_status_text()
+        self.assertTrue(result, 'ok')
+
+    def test_node_get_status_text_info(self):
+        self.created_node.status = STATUS_INFO
+        result = self.created_node.get_status_text()
+        self.assertTrue(result, 'info')
+
+    def test_node_get_status_text_warning(self):
+        self.created_node.status = STATUS_WARNING
+        result = self.created_node.get_status_text()
+        self.assertTrue(result, 'warning')
+
+    def test_node_get_status_text_error(self):
+        self.created_node.status = STATUS_ERROR
+        result = self.created_node.get_status_text()
+        self.assertTrue(result, 'error')
 
     def test_delete_succeeds(self):
         """it should return true if the node exists and the owner matches with the node

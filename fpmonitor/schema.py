@@ -12,15 +12,6 @@ DjangoSchema = schemas.get(django.get_version())
 class FpMonitorSchema(DjangoSchema, SettingsSchema):
     virtualenv_dir = StringOption(fatal=True)
 
-    class carbon(Section):
-        carbon_disabled = BoolOption(default=False)
-        carbon_host = StringOption(default='localhost')
-        carbon_port = IntOption(default=2003)
-
-    class changelog(Section):
-        max_hours = IntOption(default=24)
-        min_hours = IntOption(default=24)
-
     class testing(Section):
         test_coverage_format = StringOption(default='html')
         test_enable_logging = BoolOption(default=False)
@@ -29,3 +20,4 @@ class FpMonitorSchema(DjangoSchema, SettingsSchema):
         test_output_dir = StringOption()
         test_output_verbose = BoolOption(default=False)
         test_with_coverage = BoolOption(default=False)
+        tets_mode = BoolOption(default=False)

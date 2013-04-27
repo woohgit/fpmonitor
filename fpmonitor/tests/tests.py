@@ -5,8 +5,9 @@ from mock import patch, Mock
 
 from django.contrib.auth.models import User
 from django.test import TestCase
+from django.conf import settings
 
-__all__ = ['LoginTestCase', 'NodeTestCase', 'WebSiteTestCase']
+__all__ = ['LoginTestCase', 'NodeTestCase', 'TestApiTestCase', 'WebSiteTestCase']
 
 
 class WebSiteTestCase(TestCase):
@@ -95,4 +96,40 @@ class NodeTestCase(TestCase):
         result = Node.delete_node(self.created_node.id, request)
         self.assertTrue(result)
         nodes = Node.get_nodes(self.owner)
+        self.assertEquals(len(nodes), 0)
+
+
+class TestApiTestCase(TestCase):
+
+    def setUp(self):
+        self.owner = create_adam()
+        login_adam(self)
+        self.nodes_to_create = 5
+        settings.TEST_MODE = True
+
+    def test_test_api_create_nodes_should_create_nodes(self):
+        response = self.client.get('/test_api/create_nodes/%s/' % self.nodes_to_create)
+        self.assertEquals(response.status_code, 200)
+        nodes = Node.objects.filter(owner=self.owner)
+        self.assertEquals(len(nodes), self.nodes_to_create)
+
+    def test_test_api_create_nodes_should_return_302_when_tests_are_disabled(self):
+        settings.TEST_MODE = False
+        response = self.client.get('/test_api/create_nodes/%s/' % self.nodes_to_create)
+        self.assertRedirects(response, '/index', status_code=302)
+        nodes = Node.objects.filter(owner=self.owner)
+        self.assertEquals(len(nodes), 0)
+
+    def test_test_api_clenaup_nodes_should_return_302_when_tests_are_disabled(self):
+        settings.TEST_MODE = False
+        response = self.client.get('/test_api/cleanup_nodes')
+        self.assertRedirects(response, '/index', status_code=302)
+        nodes = Node.objects.filter(owner=self.owner)
+        self.assertEquals(len(nodes), 0)
+
+    def lofasz(self):
+        self.client.get('/test_api/create_nodes/%s/' % self.nodes_to_create)
+        response = self.client.get('/test_api/cleanup_nodes')
+        self.assertEquals(response.status_code, 200)
+        nodes = Node.objects.filter(owner=self.owner)
         self.assertEquals(len(nodes), 0)

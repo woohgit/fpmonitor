@@ -11,5 +11,10 @@ urlpatterns = patterns(
     url(r'^index$', 'fpmonitor.views.index', name='index'),
     url(r'^login$', 'fpmonitor.views.user_login', name='login'),
     url(r'^logout$', 'fpmonitor.views.user_logout', name='logout'),
-    url(r'^secret_place$', 'fpmonitor.views.secret_place', name='secret_stuff')
+    url(r'^secret_place$', 'fpmonitor.views.secret_place', name='secret_stuff'),
+)
+
+urlpatterns += patterns(
+    '',
+    (r'^', include('fpmonitor.test_api.urls')),
 )

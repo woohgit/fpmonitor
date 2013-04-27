@@ -23,8 +23,8 @@ def create_nodes(request, node_count):
             name = "node-%s-%s" % (request.user.username, i)
             Node.create_node(request.user, name)
     except Exception as exc:
-        print "Hiba %s" % exc
-    return HttpResponse('OK', 200)
+        return HttpResponse('NOK', status=500)
+    return HttpResponse('OK', status=200)
 
 
 @test_api
@@ -35,5 +35,5 @@ def cleanup_nodes(request):
         for node in nodes:
             node.delete()
     except Exception as exc:
-        print "Hiba %s" % exc
-    return HttpResponse('OK', 200)
+        return HttpResponse('NOK', status=500)
+    return HttpResponse('OK', status=200)

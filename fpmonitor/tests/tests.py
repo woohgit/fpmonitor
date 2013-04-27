@@ -1,5 +1,7 @@
 from helpers import create_adam, create_eva, login_adam, ADAM_PASSWORD, ADAM_USERNAME
 import fpmonitor.api
+from fpmonitor.test_api.test_api import create_nodes
+
 from fpmonitor.models import Node
 from mock import patch, Mock
 
@@ -133,3 +135,20 @@ class TestApiTestCase(TestCase):
         self.assertEquals(response.status_code, 200)
         nodes = Node.objects.filter(owner=self.owner)
         self.assertEquals(len(nodes), 0)
+
+    @patch('fpmonitor.test_api.test_api.Node.create_node')
+    def test_test_api_create_nodes_returns_500_on_exeption(self, mock_create_node):
+        mock_create_node.side_effect = Exception("Boom")
+        response = self.client.get('/test_api/create_nodes/%s/' % self.nodes_to_create)
+        self.assertEquals(response.content, 'NOK')
+        self.assertEquals(response.status_code, 500)
+        nodes = Node.objects.filter(owner=self.owner)
+        self.assertEquals(len(nodes), 0)
+
+    @patch('fpmonitor.test_api.test_api.Node.objects.filter')
+    def test_test_api_cleanup_nodes_returns_500_on_exeption(self, mock_objects_fiter):
+        mock_objects_fiter.side_effect = Exception("Boom")
+        self.client.get('/test_api/create_nodes/%s/' % self.nodes_to_create)
+        response = self.client.get('/test_api/cleanup_nodes')
+        self.assertEquals(response.content, 'NOK')
+        self.assertEquals(response.status_code, 500)

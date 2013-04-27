@@ -35,7 +35,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="brand" href="#">Project name</a>
+          <a class="brand" href="#">fp-Monitoring System</a>
           <div class="nav-collapse collapse">
             <p class="navbar-text pull-right">
               Logged in as <a href="#" class="navbar-link">{{ username }}</a> | 
@@ -64,6 +64,25 @@
     </div>
 
     <div class="container">
+    <h1>Node list</h1>
+    <table class="table table-striped" id="node_list"> 
+      <thead>  
+        <tr>
+          <th>NodeID</th>  
+          <th>Registered at</th>  
+        </tr>
+      </thead>
+      {% if node_list %} 
+      <tbody>
+        {% for node in node_list %}
+        <tr>  
+          <td>{{ node.name }}</td>  
+          <td>{{ node.registered_at }} </td>  
+        </tr>
+        {% endfor %}
+      </tbody>
+      {% endif %}
+    </table>
 
       <!-- Main hero unit for a primary marketing message or call to action -->
       <div class="hero-unit">
@@ -73,7 +92,7 @@
       </div>
 
       <!-- Example row of columns -->
-      <div class="row">
+<!--       <div class="row">
         <div class="span4">
           <h2>Heading</h2>
           <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
@@ -89,12 +108,12 @@
           <p>Donec sed odio dui. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Vestibulum id ligula porta felis euismod semper. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p>
           <p><a class="btn" href="#">View details &raquo;</a></p>
         </div>
-      </div>
+      </div> -->
 
       <hr>
 
       <footer>
-        <p>&copy; Company 2013</p>
+        <p>&copy; fp-Monitoring System 2013</p>
       </footer>
 
     </div> <!-- /container -->

@@ -65,19 +65,19 @@
 
     <div class="container">
     <h1>Node list</h1>
-    <table class="table table-striped" id="node_list"> 
-      <thead>  
+    <table class="table table-striped" id="node_list">
+      <thead>
         <tr>
-          <th>NodeID</th>  
-          <th>Registered at</th>  
+          <th>NodeID</th>
+          <th>Registered at</th>
         </tr>
       </thead>
       {% if node_list %} 
       <tbody>
         {% for node in node_list %}
-        <tr>  
-          <td>{{ node.name }}</td>  
-          <td>{{ node.registered_at }} </td>  
+        <tr>
+          <td>{{ node.name }}</td>
+          <td>{{ node.registered_at }} </td>
         </tr>
         {% endfor %}
       </tbody>

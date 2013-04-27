@@ -1,9 +1,3 @@
-require 'selenium-webdriver'
-require 'capybara/cucumber'
-require 'rspec/expectations'
-
-Capybara.default_driver = :selenium
-
 After do |scenario|
     if(scenario.failed?)
         page.driver.browser.save_screenshot("reports/#{scenario.name}.png")

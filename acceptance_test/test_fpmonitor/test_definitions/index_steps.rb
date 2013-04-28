@@ -6,7 +6,12 @@ end
 
 Then(/^I should see (\d+) nodes$/) do |count|
     visit 'http://192.168.56.1:8000/index'
-    page.all('table#node_list tr').count.should == count.to_i()+1
+    if count.to_i() == 0
+        num_to_check = 0
+    else
+        num_to_check = count.to_i() + 1
+    end
+    page.all('table#node_list tr').count.should == num_to_check
 end
 
 Then(/^I should see (\d+) "(.*?)" nodes$/) do |count, status|

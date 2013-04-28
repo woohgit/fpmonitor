@@ -64,6 +64,7 @@
     </div>
 
     <div class="container">
+    {% if node_list %}
     <h1>Node list</h1>
     <table class="table table-striped" id="node_list">
       <thead>
@@ -77,7 +78,7 @@
           <th>Registered at</th>
         </tr>
       </thead>
-      {% if node_list %} 
+
       <tbody>
         {% for node in node_list %}
         <tr>
@@ -90,26 +91,22 @@
         <td>{{ node.get_last_seen_in_minutes }} minutes ago</td>
         <td>{{ node.registered_at }}</td>
         </tr>
-
-
-
         {% endfor %}
       </tbody>
-      {% endif %}
     </table>
-
+    {% else %}
       <!-- Main hero unit for a primary marketing message or call to action -->
       <div class="hero-unit">
-        <h1>Hello, world!</h1>
-        <p>This is a template for a simple marketing or informational website. It includes a large callout called the hero unit and three supporting pieces of content. Use it as a starting point to create something more unique.</p>
-        <p><a href="#" class="btn btn-primary btn-large">Learn more &raquo;</a></p>
+        <h1>Welcome {{ username }}!</h1>
+        <p>You don't have nodes connected to the monitoring system</p>
       </div>
+    {% endif %}
 
       <!-- Example row of columns -->
 <!--       <div class="row">
         <div class="span4">
           <h2>Heading</h2>
-          <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
+          <p>Donec id elit non mi porta gravida at eget metus. Fusce dapiqbus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
           <p><a class="btn" href="#">View details &raquo;</a></p>
         </div>
         <div class="span4">

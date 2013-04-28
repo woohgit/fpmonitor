@@ -80,10 +80,10 @@
       <tbody>
         {% for node in node_list %}
         <tr>
-          <td>{{ node.name }}</td>
-          <td>{% if node.maintenance_mode %}<button class="btn btn-mini btn-warning" type="button">maintenance</button>{% else %}
-            <button class="btn btn-mini btn-success" type="button">running</button>{% endif %}</td>
-          <td><button class="btn btn-mini btn-{{ node.status }}" type="button">{{ node.get_status_text }}</button></td>
+          <td><a href="/node/show/{{ node.id }}">{{ node.name }}</a></td>
+          <td>{% if node.maintenance_mode %}maintenance{% else %}
+           running{% endif %}</td>
+          <td><button class="btn btn-mini btn-{{ node.get_status_class }}" type="button">{{ node.get_status_text }}</button></td>
         <td>{{ node.os_type }}</td>
         <td>{{ node.os_version }}</td>
         <td>{{ node.registered_at }}</td>

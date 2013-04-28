@@ -130,6 +130,31 @@ class NodeTestCase(TestCase):
         result = self.created_node.get_status_text()
         self.assertTrue(result, 'error')
 
+    def test_node_get_status_class_unknown(self):
+        self.created_node.status = STATUS_UNKNOWN
+        result = self.created_node.get_status_text()
+        self.assertTrue(result, '')
+
+    def test_node_get_status_class_ok(self):
+        self.created_node.status = STATUS_OK
+        result = self.created_node.get_status_text()
+        self.assertTrue(result, 'success')
+
+    def test_node_get_status_class_info(self):
+        self.created_node.status = STATUS_INFO
+        result = self.created_node.get_status_text()
+        self.assertTrue(result, 'info')
+
+    def test_node_get_status_class_warning(self):
+        self.created_node.status = STATUS_WARNING
+        result = self.created_node.get_status_text()
+        self.assertTrue(result, 'warning')
+
+    def test_node_get_status_class_error(self):
+        self.created_node.status = STATUS_ERROR
+        result = self.created_node.get_status_text()
+        self.assertTrue(result, 'danger')
+
     def test_delete_succeeds(self):
         """it should return true if the node exists and the owner matches with the node
 
@@ -147,18 +172,20 @@ class TestApiTestCase(TestCase):
     def setUp(self):
         self.owner = create_adam()
         login_adam(self)
-        self.nodes_to_create = 5
+        self.nodes_to_create = 2
         settings.TEST_MODE = True
 
     def test_test_api_create_nodes_should_create_nodes(self):
-        response = self.client.get('/test_api/create_nodes/%s/' % self.nodes_to_create)
+        response = self.client.get('/test_api/create_nodes/%s/%s' % (self.nodes_to_create, STATUS_OK))
         self.assertEquals(response.status_code, 200)
         nodes = Node.objects.filter(owner=self.owner)
         self.assertEquals(len(nodes), self.nodes_to_create)
+        for node in nodes:
+            self.assertEquals(node.status, STATUS_OK)
 
     def test_test_api_create_nodes_should_return_302_when_tests_are_disabled(self):
         settings.TEST_MODE = False
-        response = self.client.get('/test_api/create_nodes/%s/' % self.nodes_to_create)
+        response = self.client.get('/test_api/create_nodes/%s/%s' % (self.nodes_to_create, STATUS_UNKNOWN))
         self.assertRedirects(response, '/index', status_code=302)
         nodes = Node.objects.filter(owner=self.owner)
         self.assertEquals(len(nodes), 0)
@@ -171,7 +198,7 @@ class TestApiTestCase(TestCase):
         self.assertEquals(len(nodes), 0)
 
     def test_tets_api_cleanup_nodes_should_delete_all_nodes(self):
-        self.client.get('/test_api/create_nodes/%s/' % self.nodes_to_create)
+        self.client.get('/test_api/create_nodes/%s/%s' % (self.nodes_to_create, STATUS_UNKNOWN))
         response = self.client.get('/test_api/cleanup_nodes')
         self.assertEquals(response.status_code, 200)
         nodes = Node.objects.filter(owner=self.owner)
@@ -180,7 +207,7 @@ class TestApiTestCase(TestCase):
     @patch('fpmonitor.test_api.test_api.Node.create_node')
     def test_test_api_create_nodes_returns_500_on_exeption(self, mock_create_node):
         mock_create_node.side_effect = Exception("Boom")
-        response = self.client.get('/test_api/create_nodes/%s/' % self.nodes_to_create)
+        response = self.client.get('/test_api/create_nodes/%s/%s' % (self.nodes_to_create, STATUS_UNKNOWN))
         self.assertEquals(response.content, 'NOK')
         self.assertEquals(response.status_code, 500)
         nodes = Node.objects.filter(owner=self.owner)
@@ -189,7 +216,7 @@ class TestApiTestCase(TestCase):
     @patch('fpmonitor.test_api.test_api.Node.objects.filter')
     def test_test_api_cleanup_nodes_returns_500_on_exeption(self, mock_objects_fiter):
         mock_objects_fiter.side_effect = Exception("Boom")
-        self.client.get('/test_api/create_nodes/%s/' % self.nodes_to_create)
+        self.client.get('/test_api/create_nodes/%s/%s' % (self.nodes_to_create, STATUS_UNKNOWN))
         response = self.client.get('/test_api/cleanup_nodes')
         self.assertEquals(response.content, 'NOK')
         self.assertEquals(response.status_code, 500)

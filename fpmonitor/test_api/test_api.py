@@ -17,12 +17,16 @@ def test_api(f):
 
 @test_api
 @login_required
-def create_nodes(request, node_count):
+def create_nodes(request, node_count, status, name=None):
     try:
         for i in range(int(node_count)):
-            name = "node-%s-%s" % (request.user.username, i)
-            Node.create_node(request.user, name)
+            if name is None:
+                node_name = "node-%s-%s" % (request.user.username, i)
+            else:
+                node_name = name
+            Node.create_node(request.user, status=status, name=node_name)
     except Exception as exc:
+        print "Exception %s" % exc
         return HttpResponse('NOK', status=500)
     return HttpResponse('OK', status=200)
 

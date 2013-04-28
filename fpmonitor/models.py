@@ -21,11 +21,11 @@ class Node(models.Model):
         return Node.objects.filter(owner=owner)
 
     @classmethod
-    def create_node(cls, owner, name):
+    def create_node(cls, owner, name, status=STATUS_UNKNOWN):
         n = Node.objects.filter(owner=owner, name=name)
         if n:
             raise IntegrityError('This node name is taken')
-        node = Node.objects.create(owner=owner, name=name, os_type='Linux', os_version='Ubuntu')
+        node = Node.objects.create(owner=owner, name=name, os_type='Linux', os_version='Ubuntu', status=status)
         return node
 
     @classmethod
@@ -48,3 +48,15 @@ class Node(models.Model):
             return 'warning'
         else:
             return 'error'
+
+    def get_status_class(self):
+        if self.status == STATUS_OK:
+            return 'success'
+        elif self.status == STATUS_UNKNOWN:
+            return ''
+        elif self.status == STATUS_INFO:
+            return 'info'
+        elif self.status == STATUS_WARNING:
+            return 'warning'
+        else:
+            return 'danger'

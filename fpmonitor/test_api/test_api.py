@@ -8,10 +8,7 @@ from django.http import HttpResponseRedirect, HttpResponse
 def test_api(f):
     @wraps(f)
     def wrapper(*args, **kwargs):
-        if settings.TEST_MODE:
-            return f(*args, **kwargs)
-        else:
-            return HttpResponseRedirect('/index')
+        return f(*args, **kwargs) if settings.TEST_MODE else HttpResponseRedirect('/index')
     return wrapper
 
 
@@ -20,10 +17,7 @@ def test_api(f):
 def create_nodes(request, node_count, status, name=None):
     try:
         for i in range(int(node_count)):
-            if name is None:
-                node_name = "node-%s-%s" % (request.user.username, i)
-            else:
-                node_name = name
+            node_name = "node-%s-%s" % (request.user.username, i) if name is None else name
             Node.create_node(request.user, status=status, name=node_name)
     except Exception as exc:
         print "Exception %s" % exc

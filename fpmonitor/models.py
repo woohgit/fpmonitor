@@ -60,3 +60,12 @@ class Node(models.Model):
             return 'warning'
         else:
             return 'danger'
+
+    def get_last_seen_in_minutes(self):
+        now = datetime.now()
+        if self.last_sync is None:
+            return 'N/A'
+        else:
+            diff = now - self.last_sync
+            minutes = diff.seconds / 60
+            return minutes

@@ -1,3 +1,4 @@
+from datetime import datetime, timedelta
 from helpers import create_adam, create_eva, login_adam, ADAM_PASSWORD, ADAM_USERNAME, EVA_USERNAME, EVA_PASSWORD
 import fpmonitor.api
 from fpmonitor.test_api.test_api import create_nodes
@@ -165,6 +166,33 @@ class NodeTestCase(TestCase):
         self.assertTrue(result)
         nodes = Node.get_nodes(self.owner)
         self.assertEquals(len(nodes), 0)
+
+    def test_get_last_seen_in_minutes_empty_last_sync(self):
+        """get_last_seen_in_minutes should return N/A when no info about the last sync
+
+        """
+        result = self.created_node.get_last_seen_in_minutes()
+        self.assertEquals(result, "N/A")
+
+    def test_get_last_seen_in_minutes_should_return_0_minutes(self):
+        """get_last_seen_in_minutes should return 0 in minutes
+
+        """
+        now = datetime.now()
+        last_sync = now - timedelta(seconds=10)
+        self.created_node.last_sync = last_sync
+        result = self.created_node.get_last_seen_in_minutes()
+        self.assertEquals(result, 0)
+
+    def test_get_last_seen_in_minutes_should_return_the_diff_in_minutes(self):
+        """get_last_seen_in_minutes should return diff in minutes
+
+        """
+        now = datetime.now()
+        last_sync = now - timedelta(minutes=10)
+        self.created_node.last_sync = last_sync
+        result = self.created_node.get_last_seen_in_minutes()
+        self.assertEquals(result, 10)
 
 
 class TestApiTestCase(TestCase):

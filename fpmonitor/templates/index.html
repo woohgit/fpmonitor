@@ -73,6 +73,7 @@
           <th>Status</th>
           <th>OS</th>
           <th>Version</th>
+          <th>Last sync</th>
           <th>Registered at</th>
         </tr>
       </thead>
@@ -81,11 +82,12 @@
         {% for node in node_list %}
         <tr>
           <td><a href="/node/show/{{ node.id }}">{{ node.name }}</a></td>
-          <td>{% if node.maintenance_mode %}maintenance{% else %}
-           running{% endif %}</td>
+          <td>{% if node.maintenance_mode %}<span class="label label-info">maintenance</span>{% else %}
+           <span class="label label-success">enabled</span>{% endif %}</td>
           <td><button class="btn btn-mini btn-{{ node.get_status_class }}" type="button">{{ node.get_status_text }}</button></td>
         <td>{{ node.os_type }}</td>
         <td>{{ node.os_version }}</td>
+        <td>{{ node.get_last_seen_in_minutes }} minutes ago</td>
         <td>{{ node.registered_at }}</td>
         </tr>
 

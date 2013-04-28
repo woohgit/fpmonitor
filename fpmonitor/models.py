@@ -63,9 +63,4 @@ class Node(models.Model):
 
     def get_last_seen_in_minutes(self):
         now = datetime.now()
-        if self.last_sync is None:
-            return 'N/A'
-        else:
-            diff = now - self.last_sync
-            minutes = diff.seconds / 60
-            return minutes
+        return 'N/A' if self.last_sync is None else ((now - self.last_sync).seconds) / 60

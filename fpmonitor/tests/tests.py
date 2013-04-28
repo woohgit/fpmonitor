@@ -225,6 +225,14 @@ class TestApiTestCase(TestCase):
         nodes = Node.objects.filter(owner=self.owner)
         self.assertEquals(len(nodes), 0)
 
+    def test_test_api_create_nodes_should_create_nodes_with_specific_name(self):
+        nodename = 'nodename12345'
+        response = self.client.get('/test_api/create_nodes/%s/%s/%s' % (1, STATUS_OK, nodename))
+        self.assertEquals(response.status_code, 200)
+        nodes = Node.objects.filter(owner=self.owner)
+        self.assertEquals(len(nodes), 1)
+        self.assertEquals(nodes[0].name, nodename)
+
     def test_tets_api_cleanup_nodes_should_delete_all_nodes(self):
         self.client.get('/test_api/create_nodes/%s/%s' % (self.nodes_to_create, STATUS_UNKNOWN))
         response = self.client.get('/test_api/cleanup_nodes')

@@ -1,5 +1,10 @@
 Feature: Index
 
+Scenario: I have no nodes
+    Given I am logged in
+    When I have 0 nodes
+    Then I should see 0 nodes
+
 Scenario: I see my nodes
     Given I am logged in
     When I have 3 nodes

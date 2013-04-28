@@ -108,52 +108,52 @@ class NodeTestCase(TestCase):
     def test_node_get_status_text_unknown(self):
         self.created_node.status = STATUS_UNKNOWN
         result = self.created_node.get_status_text()
-        self.assertTrue(result, 'unknown')
+        self.assertEquals(result, 'unknown')
 
     def test_node_get_status_text_ok(self):
         self.created_node.status = STATUS_OK
         result = self.created_node.get_status_text()
-        self.assertTrue(result, 'ok')
+        self.assertEquals(result, 'ok')
 
     def test_node_get_status_text_info(self):
         self.created_node.status = STATUS_INFO
         result = self.created_node.get_status_text()
-        self.assertTrue(result, 'info')
+        self.assertEquals(result, 'info')
 
     def test_node_get_status_text_warning(self):
         self.created_node.status = STATUS_WARNING
         result = self.created_node.get_status_text()
-        self.assertTrue(result, 'warning')
+        self.assertEquals(result, 'warning')
 
     def test_node_get_status_text_error(self):
         self.created_node.status = STATUS_ERROR
         result = self.created_node.get_status_text()
-        self.assertTrue(result, 'error')
+        self.assertEquals(result, 'error')
 
     def test_node_get_status_class_unknown(self):
         self.created_node.status = STATUS_UNKNOWN
-        result = self.created_node.get_status_text()
-        self.assertTrue(result, '')
+        result = self.created_node.get_status_class()
+        self.assertEquals(result, '')
 
     def test_node_get_status_class_ok(self):
         self.created_node.status = STATUS_OK
-        result = self.created_node.get_status_text()
-        self.assertTrue(result, 'success')
+        result = self.created_node.get_status_class()
+        self.assertEquals(result, 'success')
 
     def test_node_get_status_class_info(self):
         self.created_node.status = STATUS_INFO
-        result = self.created_node.get_status_text()
-        self.assertTrue(result, 'info')
+        result = self.created_node.get_status_class()
+        self.assertEquals(result, 'info')
 
     def test_node_get_status_class_warning(self):
         self.created_node.status = STATUS_WARNING
-        result = self.created_node.get_status_text()
-        self.assertTrue(result, 'warning')
+        result = self.created_node.get_status_class()
+        self.assertEquals(result, 'warning')
 
     def test_node_get_status_class_error(self):
         self.created_node.status = STATUS_ERROR
-        result = self.created_node.get_status_text()
-        self.assertTrue(result, 'danger')
+        result = self.created_node.get_status_class()
+        self.assertEquals(result, 'danger')
 
     def test_delete_succeeds(self):
         """it should return true if the node exists and the owner matches with the node

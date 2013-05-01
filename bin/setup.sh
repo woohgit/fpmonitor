@@ -34,3 +34,5 @@ fi
 
 ./manage.py syncdb --noinput
 ./manage.py loaddata sample_data.json
+
+echo "Installation complete!"

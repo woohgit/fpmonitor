@@ -59,7 +59,7 @@ When(/^I set the first node to maintenance mode$/) do
 end
 
 When(/^I reload the index page$/) do
-    visit 'http://192.168.56.1:8000/index'
+    visit 'http://192.168.56.1:8000/'
 end
 
 Then(/^I should see the first node is in maintenance mode$/) do

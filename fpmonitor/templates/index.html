@@ -86,7 +86,7 @@
           <td><a href="/node/show/{{ node.id }}">{{ node.name }}</a></td>
           <td>
             <div id="switchname-{{ node.id }}" class="switch switch-mini" data-on="success" data-off="danger">
-              <input id="node-cb-{{ node.id }}" type="checkbox" {% if not node.maintenance_mode %}checked{% endif %} />
+              <input id="node-cb-{{ node.id }}" name="node-cb-{{ node.id }}" type="checkbox" {% if not node.maintenance_mode %}checked{% endif %} />
             </div>
           </td>
         <td><button class="btn btn-mini btn-{{ node.get_status_class }}" type="button">{{ node.get_status_text }}</button></td>

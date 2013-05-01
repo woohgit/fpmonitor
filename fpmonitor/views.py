@@ -3,6 +3,7 @@ from fpmonitor.models import Node
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
+from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 
@@ -43,3 +44,17 @@ def user_login(request):
 def user_logout(request):
     logout(request)
     return HttpResponseRedirect('/login')
+
+
+@csrf_exempt
+@login_required
+def api_node_maintenance(request):
+    node_id = request.POST['id']
+    mode = False if request.POST['mode'] == 'true' else True
+    try:
+        node = Node.objects.get(pk=node_id, owner=request.user)
+        node.maintenance_mode = mode
+        node.save()
+        return HttpResponse('OK')
+    except Exception as e:
+        return HttpResponse('NOK %s' % e, status=200)

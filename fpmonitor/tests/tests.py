@@ -194,6 +194,19 @@ class NodeTestCase(TestCase):
         result = self.created_node.get_last_seen_in_minutes()
         self.assertEquals(result, 10)
 
+    def test_api_node_maintenance_login_required_302(self):
+        response = self.client.post('/api/v1/node/maintenance_mode', {'id': '0'})
+        self.assertEquals(response.status_code, 302)
+
+    def test_api_node_maintenance_changes_maintenance(self):
+        login_adam(self)
+        response = self.client.post('/api/v1/node/maintenance_mode', {'id': self.created_node.id, 'mode': 'true'})
+        node = Node.objects.get(pk=self.created_node.id)
+        self.assertFalse(node.maintenance_mode)
+        response = self.client.post('/api/v1/node/maintenance_mode', {'id': self.created_node.id, 'mode': 'false'})
+        node = Node.objects.get(pk=self.created_node.id)
+        self.assertTrue(node.maintenance_mode)
+
 
 class TestApiTestCase(TestCase):
 

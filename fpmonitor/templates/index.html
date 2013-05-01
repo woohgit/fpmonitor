@@ -10,6 +10,7 @@
 
     <!-- Le styles -->
     <link href="{{ STATIC_URL }}/css/bootstrap.css" rel="stylesheet">
+    <link href="{{STATIC_URL }}/css/bootstrapSwitch.css" rel="stylesheet">
     <style type="text/css">
       body {
         padding-top: 60px;
@@ -83,9 +84,12 @@
         {% for node in node_list %}
         <tr>
           <td><a href="/node/show/{{ node.id }}">{{ node.name }}</a></td>
-          <td>{% if node.maintenance_mode %}<span class="label label-info">maintenance</span>{% else %}
-           <span class="label label-success">enabled</span>{% endif %}</td>
-          <td><button class="btn btn-mini btn-{{ node.get_status_class }}" type="button">{{ node.get_status_text }}</button></td>
+          <td>
+            <div id="switchname-{{ node.name }}" class="switch switch-mini" data-on="success" data-off="danger">
+              <input type="checkbox" {% if not node.maintenance_mode %}checked{% endif %} />
+            </div>
+          </td>
+        <td><button class="btn btn-mini btn-{{ node.get_status_class }}" type="button">{{ node.get_status_text }}</button></td>
         <td>{{ node.os_type }}</td>
         <td>{{ node.os_version }}</td>
         <td>{{ node.get_last_seen_in_minutes }} minutes ago</td>
@@ -134,6 +138,19 @@
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="{{ STATIC_URL }}/js/jquery-1.9.1.min.js"></script>
     <script src="{{ STATIC_URL }}/js/bootstrap.js"></script>
+    <script src="{{ STATIC_URL }}/js/bootstrapSwitch.js"></script>
+    <script>
+    {% for node in node_list %}
+      $('#switchname-{{ node.name }}').on('switch-change', function (e, data) {
+        $.ajax({
+          type: "POST",
+          url: "/api/v1/node/maintenance_mode",
+          data: { 'id': {{ node.id }}, 'mode': data.value }
+        });
+        console.log('toggled {{ node.id }}', data.value);
+      });
+    {% endfor %}
+    </script>
    
 
   </body>

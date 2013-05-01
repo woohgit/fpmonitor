@@ -207,6 +207,13 @@ class NodeTestCase(TestCase):
         node = Node.objects.get(pk=self.created_node.id)
         self.assertTrue(node.maintenance_mode)
 
+    def test_api_node_maintenance_does_notchange_maintenance_on_exception(self):
+        login_adam(self)
+        self.assertFalse(self.created_node.maintenance_mode)
+        response = self.client.post('/api/v1/node/maintenance_mode', {'id': self.created_node.id})
+        node = Node.objects.get(pk=self.created_node.id)
+        self.assertFalse(node.maintenance_mode)
+
 
 class TestApiTestCase(TestCase):
 

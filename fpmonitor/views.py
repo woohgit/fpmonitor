@@ -49,9 +49,9 @@ def user_logout(request):
 @csrf_exempt
 @login_required
 def api_node_maintenance(request):
-    node_id = request.POST['id']
-    mode = False if request.POST['mode'] == 'true' else True
     try:
+        node_id = request.POST['id']
+        mode = False if request.POST['mode'] == 'true' else True
         node = Node.objects.get(pk=node_id, owner=request.user)
         node.maintenance_mode = mode
         node.save()

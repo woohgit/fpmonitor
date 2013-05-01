@@ -85,8 +85,8 @@
         <tr>
           <td><a href="/node/show/{{ node.id }}">{{ node.name }}</a></td>
           <td>
-            <div id="switchname-{{ node.name }}" class="switch switch-mini" data-on="success" data-off="danger">
-              <input type="checkbox" {% if not node.maintenance_mode %}checked{% endif %} />
+            <div id="switchname-{{ node.id }}" class="switch switch-mini" data-on="success" data-off="danger">
+              <input id="node-cb-{{ node.id }}" type="checkbox" {% if not node.maintenance_mode %}checked{% endif %} />
             </div>
           </td>
         <td><button class="btn btn-mini btn-{{ node.get_status_class }}" type="button">{{ node.get_status_text }}</button></td>
@@ -141,7 +141,7 @@
     <script src="{{ STATIC_URL }}/js/bootstrapSwitch.js"></script>
     <script>
     {% for node in node_list %}
-      $('#switchname-{{ node.name }}').on('switch-change', function (e, data) {
+      $('#switchname-{{ node.id }}').on('switch-change', function (e, data) {
         $.ajax({
           type: "POST",
           url: "/api/v1/node/maintenance_mode",

@@ -52,3 +52,17 @@ Then(/^I should see (\d+) different status$/) do |count|
     page.all('button.btn-danger').count.should == 1
     page.all('button.btn-').count.should == 1
 end
+
+When(/^I set the first node to maintenance mode$/) do
+    visit 'http://192.168.56.1:8000/index'
+    first('.switch-left').click
+end
+
+When(/^I reload the index page$/) do
+    visit 'http://192.168.56.1:8000/index'
+end
+
+Then(/^I should see the first node is in maintenance mode$/) do
+    cb = find("#node-cb-1")
+    cb.should_not be_checked
+end

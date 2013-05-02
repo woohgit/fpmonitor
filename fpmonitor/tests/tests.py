@@ -308,3 +308,11 @@ class TestApiTestCase(TestCase):
         self.assertFalse(settings.TEST_MODE)
         self.client.get('/test_api/test_mode_on')
         self.assertTrue(settings.TEST_MODE)
+
+    def test_api_test_mode_on_fails_when_not_superadmin(self):
+        self.client.get('/test_api/test_mode_off')
+        self.assertFalse(settings.TEST_MODE)
+        self.owner.is_superuser = False
+        self.owner.save()
+        self.client.get('/test_api/test_mode_on')
+        self.assertFalse(settings.TEST_MODE)

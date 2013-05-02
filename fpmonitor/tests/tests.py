@@ -214,6 +214,14 @@ class NodeTestCase(TestCase):
         node = Node.objects.get(pk=self.created_node.id)
         self.assertFalse(node.maintenance_mode)
 
+    @patch('fpmonitor.models.Node.get_uptime_string')
+    def test_get_uptime_calls_get_uptime_string(self, mock_get_uptime_string):
+        mock_get_uptime_string.return_value = "1 hour(s), 0 minute(s)"
+        self.created_node.uptime = 3600
+        self.created_node.save()
+        result = self.created_node.get_uptime()
+        mock_get_uptime_string.assert_called_once_with(self.created_node.uptime)
+
     def test_get_uptime_string(self):
         result = Node.get_uptime_string(0)
         self.assertEquals("0 second(s)", result)

@@ -66,6 +66,9 @@ class Node(models.Model):
         now = datetime.now()
         return 'N/A' if self.last_sync is None else ((now - self.last_sync).seconds) / 60
 
+    def get_uptime(self):
+        return self.get_uptime_string(self.uptime)
+
     @classmethod
     def get_uptime_string(cls, seconds):
         days = seconds / 86400

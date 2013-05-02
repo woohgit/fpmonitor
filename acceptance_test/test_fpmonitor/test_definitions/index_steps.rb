@@ -56,15 +56,10 @@ end
 When(/^I set the first node to maintenance mode$/) do
     visit 'http://192.168.56.1:8000/index'
     first('.switch-left').click
-    cb = all("input[type='checkbox']")[1]
-    cb.should be_checked
 end
 
-When(/^I reload the index page$/) do
-    visit 'http://192.168.56.1:8000/'
-end
-
-Then(/^I should see the first node is in maintenance mode$/) do
+Then(/^I should see the first node is in maintenance mode after reloading$/) do
+    visit 'http://192.168.56.1:8000/index'
     cb = all("input[type='checkbox']")[0]
     cb.should_not be_checked
 end

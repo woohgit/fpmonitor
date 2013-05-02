@@ -29,5 +29,4 @@ Scenario: I change one of my nodes to maintenance mode
     Given I am logged in
     And I have 3 nodes with status "OK"
     When I set the first node to maintenance mode
-    And I reload the index page
-    Then I should see the first node is in maintenance mode
+    Then I should see the first node is in maintenance mode after reloading

@@ -1,4 +1,5 @@
 import os
+import platform
 
 
 def get_system_uptime_in_seconds():
@@ -16,3 +17,16 @@ def get_system_load():
     except:
         loadavg = (0, 0, 0)
     return loadavg
+
+
+def get_system():
+    return platform.system()
+
+
+def get_release():
+    return platform.release()
+
+
+def get_distribution():
+    distribution = platform.linux_distribution()
+    return "%s %s" % (distribution[0], distribution[2])

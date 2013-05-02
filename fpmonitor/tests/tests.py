@@ -298,3 +298,13 @@ class TestApiTestCase(TestCase):
         response = self.client.get('/test_api/cleanup_nodes')
         self.assertEquals(response.content, 'NOK')
         self.assertEquals(response.status_code, 500)
+
+    def test_api_test_mode_off(self):
+        self.client.get('/test_api/test_mode_off')
+        self.assertFalse(settings.TEST_MODE)
+
+    def test_api_test_mode_on(self):
+        self.client.get('/test_api/test_mode_off')
+        self.assertFalse(settings.TEST_MODE)
+        self.client.get('/test_api/test_mode_on')
+        self.assertTrue(settings.TEST_MODE)

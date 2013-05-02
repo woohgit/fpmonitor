@@ -16,6 +16,7 @@ def create_adam():
     user.first_name = 'Adam'
     user.is_active = True
     user.is_staff = True
+    user.is_superuser = True
     user.save()
     return user
 

@@ -214,6 +214,20 @@ class NodeTestCase(TestCase):
         node = Node.objects.get(pk=self.created_node.id)
         self.assertFalse(node.maintenance_mode)
 
+    def test_get_uptime_string(self):
+        result = Node.get_uptime_string(0)
+        self.assertEquals("0 second(s)", result)
+        result = Node.get_uptime_string(60)
+        self.assertEquals("1 minute(s)", result)
+        result = Node.get_uptime_string(840)
+        self.assertEquals("14 minute(s)", result)
+        result = Node.get_uptime_string(3600)
+        self.assertEquals("1 hour(s), 0 minute(s)", result)
+        result = Node.get_uptime_string(86400)
+        self.assertEquals("1 day(s), 0 hour(s)", result)
+        result = Node.get_uptime_string(3459601)
+        self.assertEquals("40 day(s), 1 hour(s)", result)
+
 
 class TestApiTestCase(TestCase):
 

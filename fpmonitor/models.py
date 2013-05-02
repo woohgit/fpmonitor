@@ -15,6 +15,7 @@ class Node(models.Model):
     kernel_version = models.CharField(max_length=250)
     maintenance_mode = models.BooleanField(default=False)
     status = models.PositiveIntegerField(choices=STATUS_CHOICES, default=STATUS_UNKNOWN)
+    uptime = models.PositiveIntegerField(default=0)
 
     @classmethod
     def get_nodes(cls, owner):
@@ -64,3 +65,27 @@ class Node(models.Model):
     def get_last_seen_in_minutes(self):
         now = datetime.now()
         return 'N/A' if self.last_sync is None else ((now - self.last_sync).seconds) / 60
+
+    @classmethod
+    def get_uptime_string(cls, seconds):
+        days = seconds / 86400
+        seconds -= 86400 * days
+
+        hours = seconds / 3600
+        seconds -= 3600 * hours
+
+        minutes = seconds / 60
+        seconds -= 60 * minutes
+
+        if days == 0 and hours == 0 and minutes == 0:
+            return "%d second(s)" % (seconds)
+
+        if days == 0 and hours == 0:
+            return "%d minute(s)" % (minutes)
+
+        # use a bigger perspective. We're not interested in seconds as of now
+        if days == 0:
+            return "%d hour(s), %d minute(s)" % (hours, minutes)
+
+        # use a more bigger perspective. We're not interested in minutes and seconds as of now
+        return "%d day(s), %d hour(s)" % (days, hours)

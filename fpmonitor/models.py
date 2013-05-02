@@ -16,6 +16,7 @@ class Node(models.Model):
     maintenance_mode = models.BooleanField(default=False)
     status = models.PositiveIntegerField(choices=STATUS_CHOICES, default=STATUS_UNKNOWN)
     uptime = models.PositiveIntegerField(default=0)
+    loadavg = models.CharField(max_length=512, blank=True, null=True)
 
     @classmethod
     def get_nodes(cls, owner):

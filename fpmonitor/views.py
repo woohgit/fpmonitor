@@ -1,5 +1,6 @@
 from fpmonitor.models import Node
 
+from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
@@ -18,7 +19,7 @@ def home(request):
 @login_required
 def index(request):
     node_list = Node.objects.filter(owner=request.user)
-    return render(request, 'index.html', {'username': request.user.username, 'node_list': node_list})
+    return render(request, 'index.html', {'username': request.user.username, 'node_list': node_list, 'test_mode': settings.TEST_MODE})
 
 
 def user_login(request):

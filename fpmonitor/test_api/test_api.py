@@ -35,3 +35,17 @@ def cleanup_nodes(request):
     except Exception as exc:
         return HttpResponse('NOK', status=500)
     return HttpResponse('OK', status=200)
+
+
+@test_api
+@login_required
+def test_mode_off(request):
+    settings.TEST_MODE = False
+    return HttpResponse('OK', status=200)
+
+
+@login_required
+def test_mode_on(request):
+    if request.user.is_superuser:
+        settings.TEST_MODE = True
+    return HttpResponse('OK', status=200)

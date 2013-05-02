@@ -30,3 +30,12 @@ Scenario: I change one of my nodes to maintenance mode
     And I have 3 nodes with status "OK"
     When I set the first node to maintenance mode
     Then I should see the first node is in maintenance mode after reloading
+
+Scenario: I see a warning message when the system is in test mode
+    Given I am logged in
+    Then I should see a warning message "Warning! The test mode is ON"
+
+Scenario: I should not see a warning message when the system is not in test mode
+    Given I am logged in
+    When I disable the test mode
+    Then I should not see a warning message "Warning! The test mode is ON"

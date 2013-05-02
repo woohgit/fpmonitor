@@ -63,3 +63,20 @@ Then(/^I should see the first node is in maintenance mode after reloading$/) do
     page.all('.switch-off').count.should == 1
     page.all('.switch-on').count.should == 2
 end
+
+
+Then(/^I should see a warning message "(.*?)"$/) do |message|
+    visit 'http://192.168.56.1:8000/index'
+    page.should have_content(message)
+end
+
+When(/^I disable the test mode$/) do
+    visit 'http://192.168.56.1:8000/test_api/test_mode_off'
+    page.should have_content("OK")
+end
+
+Then(/^I should not see a warning message "(.*?)"$/) do |message|
+    visit 'http://192.168.56.1:8000/index'
+    page.should_not have_content(message)
+    visit 'http://192.168.56.1:8000/test_api/test_mode_on'
+end

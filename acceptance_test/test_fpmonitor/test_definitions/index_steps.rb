@@ -60,6 +60,6 @@ end
 
 Then(/^I should see the first node is in maintenance mode after reloading$/) do
     visit 'http://192.168.56.1:8000/index'
-    cb = all("input[type='checkbox']")[0]
-    cb.should_not be_checked
+    cb = all("input[type='checkbox']")[1]
+    cb.should be_checked
 end

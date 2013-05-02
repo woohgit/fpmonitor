@@ -76,7 +76,7 @@
           <th>OS</th>
           <th>Version</th>
           <th>Last sync</th>
-          <th>Registered at</th>
+          <th>Uptime</th>
         </tr>
       </thead>
 
@@ -93,7 +93,7 @@
         <td>{{ node.os_type }}</td>
         <td>{{ node.os_version }}</td>
         <td>{{ node.get_last_seen_in_minutes }} minutes ago</td>
-        <td>{{ node.registered_at }}</td>
+        <td>{{ node.get_uptime }}</td>
         </tr>
         {% endfor %}
       </tbody>

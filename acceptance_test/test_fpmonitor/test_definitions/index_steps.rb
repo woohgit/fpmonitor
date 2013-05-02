@@ -63,6 +63,6 @@ When(/^I reload the index page$/) do
 end
 
 Then(/^I should see the first node is in maintenance mode$/) do
-    cb = first("input[type='checkbox']")
+    cb = all("input[type='checkbox']")[0]
     cb.should_not be_checked
 end

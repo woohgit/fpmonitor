@@ -48,7 +48,7 @@ Then(/^I should see (\d+) different status$/) do |count|
     visit 'http://192.168.56.1:8000/index'
     page.all('span.label-success').count.should == 1
     page.all('span.label-info').count.should == 1
-    page.all('span.label-warning').count.should == 1
+    page.all('span.label-warning').count.should == 2    # because we have a warning label
     page.all('span.label-danger').count.should == 1
     page.all('span.label-').count.should == 1
 end

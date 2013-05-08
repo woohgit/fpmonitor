@@ -22,7 +22,7 @@ Then(/^I should see (\d+) "(.*?)" nodes$/) do |count, status|
         style = "danger"
     end
     visit 'http://192.168.56.1:8000/index'
-    page.all('button.btn-' + style).count.should == count.to_i()
+    page.all('span.label-' + style).count.should == count.to_i()
 end
 
 When(/^I have (\d+) nodes with status "(.*?)"$/) do |count, status|

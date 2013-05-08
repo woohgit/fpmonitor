@@ -65,6 +65,7 @@
           <th>NodeID</th>
           <th>Monitoring</th>
           <th>Status</th>
+          <th>Load</th>
           <th>OS</th>
           <th>Version</th>
           <th>Last sync</th>
@@ -75,13 +76,14 @@
       <tbody>
         {% for node in node_list %}
         <tr>
-          <td><a href="/node/show/{{ node.id }}">{{ node.name }}</a></td>
+          <td><a href="#">{{ node.name }}</a></td>
           <td>
             <div id="switchname-{{ node.id }}" class="switch switch-mini" data-on="success" data-off="danger">
               <input id="node-cb-{{ node.id }}" name="node-cb-{{ node.id }}" type="checkbox" {% if not node.maintenance_mode %}checked{% endif %} />
             </div>
           </td>
-        <td><button class="btn btn-mini btn-{{ node.get_status_class }}" type="button">{{ node.get_status_text }}</button></td>
+        <td><span class="label label-{{ node.get_status_class }}">&nbsp; &nbsp; {{ node.get_status_text }} &nbsp; &nbsp; </span></td>
+        <td>[{{ node.loadavg_5|floatformat}}] [{{node.loadavg_10|floatformat}}] [{{node.loadavg_15|floatformat}}]</td>
         <td>{{ node.os_type }}</td>
         <td>{{ node.os_version }}</td>
         <td>{{ node.get_last_seen_in_minutes }} minutes ago</td>

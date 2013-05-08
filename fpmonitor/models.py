@@ -1,4 +1,4 @@
-from datetime import datetime
+from django.utils import timezone
 from fpmonitor.consts import *
 from django.contrib.auth.models import User
 from django.db import models, IntegrityError
@@ -7,7 +7,7 @@ from django.db import models, IntegrityError
 class Node(models.Model):
 
     owner = models.ForeignKey(User, blank=False)
-    registered_at = models.DateTimeField(null=True, blank=True, default=datetime.now())
+    registered_at = models.DateTimeField(null=True, blank=True, default=timezone.now())
     last_sync = models.DateTimeField(null=True, blank=True)
     name = models.CharField(max_length=250, blank=False)
     os_type = models.CharField(max_length=250)
@@ -16,7 +16,9 @@ class Node(models.Model):
     maintenance_mode = models.BooleanField(default=False)
     status = models.PositiveIntegerField(choices=STATUS_CHOICES, default=STATUS_UNKNOWN)
     uptime = models.PositiveIntegerField(default=0)
-    loadavg = models.CharField(max_length=512, blank=True, null=True)
+    loadavg_5 = models.CharField(max_length=64, blank=True, null=True)
+    loadavg_10 = models.CharField(max_length=64, blank=True, null=True)
+    loadavg_15 = models.CharField(max_length=64, blank=True, null=True)
 
     @classmethod
     def get_nodes(cls, owner):
@@ -64,8 +66,16 @@ class Node(models.Model):
             return 'danger'
 
     def get_last_seen_in_minutes(self):
-        now = datetime.now()
-        return 'N/A' if self.last_sync is None else ((now - self.last_sync).seconds) / 60
+        now = timezone.now()
+
+        try:
+            if self.last_sync is None:
+                result = 'N/A'
+            else:
+                result = ((now - self.last_sync).seconds) / 60
+        except Exception as e:
+            result = e
+        return result
 
     def get_uptime(self):
         return self.get_uptime_string(self.uptime)

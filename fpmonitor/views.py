@@ -1,4 +1,8 @@
+from datetime import datetime
 from fpmonitor.models import Node
+import json
+
+from consts import *
 
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
@@ -7,6 +11,8 @@ from django.contrib.auth import authenticate, login, logout
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
+from django.db import IntegrityError
+from django.utils import timezone
 
 
 def home(request):
@@ -45,6 +51,29 @@ def user_login(request):
 def user_logout(request):
     logout(request)
     return HttpResponseRedirect('/login')
+
+
+@csrf_exempt
+def receive_data(request):
+    try:
+        data = json.loads(request.POST.get('data'))
+        owner = User.objects.get(pk=int(data['node_user_id']))
+        try:
+            node = Node.create_node(owner, data['node_name'])
+        except IntegrityError:
+            node = Node.objects.get(name=data['node_name'])
+        node.kernel_version = data['kernel']
+        node.uptime = data['uptime']
+        node.os_type = data['system']
+        node.loadavg_5 = data['loadavg'][0]
+        node.loadavg_10 = data['loadavg'][1]
+        node.loadavg_15 = data['loadavg'][2]
+        node.last_sync = timezone.now()
+        node.status = STATUS_OK
+        node.save()
+        return HttpResponse("OK %s" % data, status=200)
+    except Exception as e:
+        return HttpResponse("NOK %s %s" % (e, data), status=200)
 
 
 @csrf_exempt

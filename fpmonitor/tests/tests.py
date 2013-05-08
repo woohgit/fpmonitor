@@ -10,6 +10,7 @@ from django.contrib.auth.models import User
 from django.db import IntegrityError
 from django.test import TestCase
 from django.conf import settings
+from django.utils import timezone
 
 __all__ = ['LoginTestCase', 'NodeTestCase', 'TestApiTestCase', 'WebSiteTestCase']
 
@@ -178,7 +179,7 @@ class NodeTestCase(TestCase):
         """get_last_seen_in_minutes should return 0 in minutes
 
         """
-        now = datetime.now()
+        now = timezone.now()
         last_sync = now - timedelta(seconds=10)
         self.created_node.last_sync = last_sync
         result = self.created_node.get_last_seen_in_minutes()
@@ -188,7 +189,7 @@ class NodeTestCase(TestCase):
         """get_last_seen_in_minutes should return diff in minutes
 
         """
-        now = datetime.now()
+        now = timezone.now()
         last_sync = now - timedelta(minutes=10)
         self.created_node.last_sync = last_sync
         result = self.created_node.get_last_seen_in_minutes()

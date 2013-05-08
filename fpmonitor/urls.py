@@ -12,6 +12,7 @@ urlpatterns = patterns(
     url(r'^login$', 'fpmonitor.views.user_login', name='login'),
     url(r'^logout$', 'fpmonitor.views.user_logout', name='logout'),
     url(r'^api/v1/node/maintenance_mode$', 'fpmonitor.views.api_node_maintenance', name='api_node_maintenance'),
+    url(r'^receive_data$', 'fpmonitor.views.receive_data', name='receive_data'),
 )
 
 urlpatterns += patterns(

@@ -4,6 +4,7 @@ import fpmonitor.api
 from fpmonitor.test_api.test_api import create_nodes
 from fpmonitor.consts import *
 from fpmonitor.models import Node
+import json
 from mock import patch, Mock
 
 from django.contrib.auth.models import User
@@ -30,6 +31,25 @@ class WebSiteTestCase(TestCase):
         login_adam(self)
         response = self.client.get('/')
         self.assertRedirects(response, '/index', status_code=302)
+
+    def test_receive_data_new_node(self):
+        owner = create_adam()
+        data = {}
+        data['node_name'] = 'test'
+        data['node_user_id'] = owner.id
+        data['uptime'] = 1000
+        data['loadavg'] = (1, 1, 1)
+        data['system'] = 'System'
+        data['kernel'] = 'Kernel'
+        data['distribution'] = 'Distribution'
+        post_data = json.dumps(data)
+        self.client.post('/receive_data', {'data': post_data})
+        node = Node.objects.get(name='test')
+        self.assertEquals(node.name, 'test')
+        self.assertEquals(node.owner, owner)
+        self.assertEquals(node.os_type, 'System')
+        self.assertEquals(node.kernel_version, 'Kernel')
+        self.assertEquals(node.get_last_seen_in_minutes(), 0)
 
 
 class LoginTestCase(TestCase):

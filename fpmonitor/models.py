@@ -63,7 +63,7 @@ class Node(models.Model):
         elif self.status == STATUS_WARNING:
             return 'warning'
         else:
-            return 'danger'
+            return 'important'
 
     def get_last_seen_in_minutes(self):
         now = timezone.now()
@@ -76,6 +76,36 @@ class Node(models.Model):
         except Exception as e:
             result = e
         return result
+
+    def check_alerting_level(self, status, threshold_load, threshold_seen):
+        # TODO: wooh - here goes the logic!
+        # ha a load nagyobb mint 5
+        # ha a get_last_seen_in_minutes > 6
+        if (int(float(self.loadavg_5)) > threshold_load or int(float(self.loadavg_10)) > threshold_load or int(float(self.loadavg_15)) > threshold_load):
+            self.status = status
+            self.save()
+            print "LOAD! %s %s %s %s %s %s" % (status, threshold_load, self.loadavg_5, self.loadavg_10, self.loadavg_15, (self.loadavg_5 > threshold_load or self.loadavg_10 > threshold_load or self.loadavg_15 > threshold_load))
+            return True
+
+        if (self.get_last_seen_in_minutes() >= threshold_seen):
+            self.status = status
+            self.save()
+            print "LAST SEEN! %s" % status
+            return True
+
+        return False
+
+    def update_status_if_required(self):
+
+        if self.check_alerting_level(STATUS_ERROR, ALERT_DANGER_LOAD, ALERT_DANGER_SEEN):
+            return
+        if self.check_alerting_level(STATUS_WARNING, ALERT_WARNING_LOAD, ALERT_WARNING_SEEN):
+            return
+        if self.check_alerting_level(STATUS_INFO, ALERT_INFO_LOAD, ALERT_INFO_SEEN):
+            return
+
+        self.status = STATUS_OK
+        self.save()
 
     def get_uptime(self):
         return self.get_uptime_string(self.uptime)

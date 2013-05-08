@@ -175,7 +175,7 @@ class NodeTestCase(TestCase):
     def test_node_get_status_class_error(self):
         self.created_node.status = STATUS_ERROR
         result = self.created_node.get_status_class()
-        self.assertEquals(result, 'danger')
+        self.assertEquals(result, 'important')
 
     def test_delete_succeeds(self):
         """it should return true if the node exists and the owner matches with the node

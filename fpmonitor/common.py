@@ -30,3 +30,7 @@ def get_release():
 def get_distribution():
     distribution = platform.linux_distribution()
     return "%s %s" % (distribution[0], distribution[2])
+
+
+def get_memory_usage():
+    return int(psutil.phymem_usage()[3])

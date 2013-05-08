@@ -69,7 +69,6 @@ def receive_data(request):
         node.loadavg_10 = data['loadavg'][1]
         node.loadavg_15 = data['loadavg'][2]
         node.last_sync = timezone.now()
-        node.status = STATUS_OK
         node.save()
         return HttpResponse("OK %s" % data, status=200)
     except Exception as e:

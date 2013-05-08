@@ -46,11 +46,11 @@ end
 
 Then(/^I should see (\d+) different status$/) do |count|
     visit 'http://192.168.56.1:8000/index'
-    page.all('button.btn-success').count.should == 1
-    page.all('button.btn-info').count.should == 1
-    page.all('button.btn-warning').count.should == 1
-    page.all('button.btn-danger').count.should == 1
-    page.all('button.btn-').count.should == 1
+    page.all('span.label-success').count.should == 1
+    page.all('span.label-info').count.should == 1
+    page.all('span.label-warning').count.should == 1
+    page.all('span.label-danger').count.should == 1
+    page.all('span.label-').count.should == 1
 end
 
 When(/^I set the first node to maintenance mode$/) do

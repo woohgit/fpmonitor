@@ -52,9 +52,9 @@
       <form class="form-signin" name="form-signin" id="form-signin" method="POST" action="/login">
         {% csrf_token %}
         <div class="control-group {%if error %}error{% endif %}">
-          <h2 class="form-signin-heading">Kérlek lépj be!</h2>
-          <input type="text" id="username" name="username" class="input-block-level" placeholder="Felhasználónév">
-          <input type="password" id="password" name="password" class="input-block-level" placeholder="Jelszó">
+          <h2 class="form-signin-heading">Please log in!</h2>
+          <input type="text" id="username" name="username" class="input-block-level" placeholder="Username">
+          <input type="password" id="password" name="password" class="input-block-level" placeholder="Password">
           {%if failed_login %}
           <span class="help-inline">Invalid login credentials!</span>
           {% endif %}

@@ -21,7 +21,7 @@ When /^I log out$/ do
 end
 
 Then /^I should be logged out$/ do
-    page.should have_content("K\u00E9rlek l\u00E9pj be!")
+    page.should have_content("Please log in")
 end
 
 Given /^I am logged out$/ do

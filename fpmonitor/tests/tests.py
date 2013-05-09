@@ -257,6 +257,42 @@ class NodeTestCase(TestCase):
         result = Node.get_uptime_string(3459601)
         self.assertEquals("40 day(s), 1 hour(s)", result)
 
+    def test_check_alerting_level_alert_status_load(self):
+        self.created_node.status = STATUS_UNKNOWN
+        self.created_node.uptime = 1000
+        self.created_node.last_sync = timezone.now()
+        self.created_node.loadavg_5 = 1
+        self.created_node.loadavg_10 = 0
+        self.created_node.loadavg_15 = 0
+        self.created_node.save()
+        self.created_node.check_alerting_level(STATUS_INFO, 1, 2)
+        node = Node.objects.get(pk=self.created_node.id)
+        node.status = STATUS_INFO
+
+    def test_check_alerting_level_alert_status_seen(self):
+        self.created_node.status = STATUS_UNKNOWN
+        self.created_node.uptime = 1000
+        self.created_node.last_sync = timezone.now() - timedelta(minutes=3)
+        self.created_node.loadavg_5 = 0
+        self.created_node.loadavg_10 = 0
+        self.created_node.loadavg_15 = 0
+        self.created_node.save()
+        self.created_node.check_alerting_level(STATUS_INFO, 1, 2)
+        node = Node.objects.get(pk=self.created_node.id)
+        node.status = STATUS_INFO
+
+    def test_check_alerting_level_alert_status_seen(self):
+        self.created_node.status = STATUS_UNKNOWN
+        self.created_node.uptime = 1000
+        self.created_node.last_sync = timezone.now()
+        self.created_node.loadavg_5 = 0
+        self.created_node.loadavg_10 = 0
+        self.created_node.loadavg_15 = 0
+        self.created_node.save()
+        self.created_node.check_alerting_level(STATUS_INFO, 2, 2)
+        node = Node.objects.get(pk=self.created_node.id)
+        node.status = STATUS_OK
+
 
 class TestApiTestCase(TestCase):
 

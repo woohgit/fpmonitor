@@ -33,4 +33,4 @@ def get_distribution():
 
 
 def get_memory_usage():
-    return int(psutil.phymem_usage()[3])
+    return int(psutil.virtual_memory()[2])

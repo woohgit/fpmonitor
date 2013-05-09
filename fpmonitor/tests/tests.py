@@ -283,19 +283,6 @@ class NodeTestCase(TestCase):
         node = Node.objects.get(pk=self.created_node.id)
         node.status = STATUS_INFO
 
-    def test_check_alerting_level_alert_status_seen(self):
-        self.created_node.status = STATUS_UNKNOWN
-        self.created_node.uptime = 1000
-        self.created_node.last_sync = timezone.now()
-        self.created_node.loadavg_5 = 0
-        self.created_node.loadavg_10 = 0
-        self.created_node.loadavg_15 = 0
-        self.created_node.save()
-        result = self.created_node.check_alerting_level(STATUS_INFO, 2, 2)
-        self.assertFalse(result)
-        node = Node.objects.get(pk=self.created_node.id)
-        node.status = STATUS_OK
-
     def test_update_status_if_required(self):
         self.created_node.status = STATUS_UNKNOWN
         self.created_node.uptime = 1000

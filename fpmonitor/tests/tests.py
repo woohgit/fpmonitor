@@ -265,7 +265,8 @@ class NodeTestCase(TestCase):
         self.created_node.loadavg_10 = 0
         self.created_node.loadavg_15 = 0
         self.created_node.save()
-        self.created_node.check_alerting_level(STATUS_INFO, 1, 2)
+        result = self.created_node.check_alerting_level(STATUS_INFO, 1, 2)
+        self.assertTrue(result)
         node = Node.objects.get(pk=self.created_node.id)
         node.status = STATUS_INFO
 
@@ -277,7 +278,8 @@ class NodeTestCase(TestCase):
         self.created_node.loadavg_10 = 0
         self.created_node.loadavg_15 = 0
         self.created_node.save()
-        self.created_node.check_alerting_level(STATUS_INFO, 1, 2)
+        result = self.created_node.check_alerting_level(STATUS_INFO, 1, 2)
+        self.assertTrue(result)
         node = Node.objects.get(pk=self.created_node.id)
         node.status = STATUS_INFO
 
@@ -289,7 +291,8 @@ class NodeTestCase(TestCase):
         self.created_node.loadavg_10 = 0
         self.created_node.loadavg_15 = 0
         self.created_node.save()
-        self.created_node.check_alerting_level(STATUS_INFO, 2, 2)
+        result = self.created_node.check_alerting_level(STATUS_INFO, 2, 2)
+        self.assertFalse(result)
         node = Node.objects.get(pk=self.created_node.id)
         node.status = STATUS_OK
 

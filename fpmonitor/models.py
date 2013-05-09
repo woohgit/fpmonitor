@@ -81,16 +81,14 @@ class Node(models.Model):
         # TODO: wooh - here goes the logic!
         # ha a load nagyobb mint 5
         # ha a get_last_seen_in_minutes > 6
-        if (int(float(self.loadavg_5)) > threshold_load or int(float(self.loadavg_10)) > threshold_load or int(float(self.loadavg_15)) > threshold_load):
+        if (int(float(self.loadavg_5)) >= threshold_load or int(float(self.loadavg_10)) >= threshold_load or int(float(self.loadavg_15)) >= threshold_load):
             self.status = status
             self.save()
-            print "LOAD! %s %s %s %s %s %s" % (status, threshold_load, self.loadavg_5, self.loadavg_10, self.loadavg_15, (self.loadavg_5 > threshold_load or self.loadavg_10 > threshold_load or self.loadavg_15 > threshold_load))
             return True
 
         if (self.get_last_seen_in_minutes() >= threshold_seen):
             self.status = status
             self.save()
-            print "LAST SEEN! %s" % status
             return True
 
         return False

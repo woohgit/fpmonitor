@@ -51,6 +51,27 @@ class WebSiteTestCase(TestCase):
         self.assertEquals(node.kernel_version, 'Kernel')
         self.assertEquals(node.get_last_seen_in_minutes(), 0)
 
+    def test_receive_data_existing_node(self):
+        owner = create_adam()
+        created_node = Node.create_node(owner, 'test')
+        data = {}
+        data['node_name'] = 'test'
+        data['node_user_id'] = owner.id
+        data['loadavg'] = (1, 1, 1)
+        data['system'] = 'System'
+        data['kernel'] = 'Kernel'
+        data['distribution'] = 'Distribution'
+        data['uptime'] = 1005
+        post_data = json.dumps(data)
+        self.client.post('/receive_data', {'data': post_data})
+        node = Node.objects.get(pk=created_node.id)
+        self.assertEquals(node.name, 'test')
+        self.assertEquals(node.owner, owner)
+        self.assertEquals(node.os_type, 'System')
+        self.assertEquals(node.uptime, 1005)
+        self.assertEquals(node.kernel_version, 'Kernel')
+        self.assertEquals(node.get_last_seen_in_minutes(), 0)
+
 
 class LoginTestCase(TestCase):
 

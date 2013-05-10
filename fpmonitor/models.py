@@ -2,6 +2,7 @@ from django.utils import timezone
 from fpmonitor.consts import *
 from django.contrib.auth.models import User
 from django.db import models, IntegrityError
+from django.conf import settings
 
 
 class Node(models.Model):
@@ -95,11 +96,11 @@ class Node(models.Model):
 
     def update_status_if_required(self):
 
-        if self.check_alerting_level(STATUS_ERROR, ALERT_DANGER_LOAD, ALERT_DANGER_SEEN):
+        if self.check_alerting_level(STATUS_ERROR, settings.ALERT_DANGER_LOAD, settings.ALERT_DANGER_SEEN):
             return
-        if self.check_alerting_level(STATUS_WARNING, ALERT_WARNING_LOAD, ALERT_WARNING_SEEN):
+        if self.check_alerting_level(STATUS_WARNING, settings.ALERT_WARNING_LOAD, settings.ALERT_WARNING_SEEN):
             return
-        if self.check_alerting_level(STATUS_INFO, ALERT_INFO_LOAD, ALERT_INFO_SEEN):
+        if self.check_alerting_level(STATUS_INFO, settings.ALERT_INFO_LOAD, settings.ALERT_INFO_SEEN):
             return
 
         self.status = STATUS_OK

@@ -15,3 +15,10 @@ class SettingsSchema(Schema):
 
     class server(Section):
         test_mode = BoolOption(default=False)
+        alert_info_load = IntOption(default=2)
+        alert_info_seen = IntOption(default=2)
+        alert_warning_load = IntOption(default=3)
+        alert_warning_seen = IntOption(default=4)
+        alert_danger_load = IntOption(default=8)
+        alert_danger_seen = IntOption(default=4)
+        notification_level = IntOption(default=0)

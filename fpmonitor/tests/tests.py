@@ -320,7 +320,7 @@ class NodeTestCase(TestCase):
         self.created_node.status = STATUS_UNKNOWN
         self.created_node.uptime = 1000
         self.created_node.last_sync = timezone.now()
-        self.created_node.loadavg_5 = ALERT_INFO_LOAD + 1
+        self.created_node.loadavg_5 = settings.ALERT_INFO_LOAD + 1
         self.created_node.loadavg_10 = 0
         self.created_node.loadavg_15 = 0
         self.created_node.save()
@@ -332,7 +332,7 @@ class NodeTestCase(TestCase):
         self.created_node.status = STATUS_UNKNOWN
         self.created_node.uptime = 1000
         self.created_node.last_sync = timezone.now()
-        self.created_node.loadavg_5 = ALERT_DANGER_LOAD
+        self.created_node.loadavg_5 = settings.ALERT_DANGER_LOAD
         self.created_node.loadavg_10 = 0
         self.created_node.loadavg_15 = 0
         self.created_node.save()
@@ -344,7 +344,7 @@ class NodeTestCase(TestCase):
         self.created_node.status = STATUS_UNKNOWN
         self.created_node.uptime = 1000
         self.created_node.last_sync = timezone.now()
-        self.created_node.loadavg_5 = ALERT_WARNING_LOAD
+        self.created_node.loadavg_5 = settings.ALERT_WARNING_LOAD
         self.created_node.loadavg_10 = 0
         self.created_node.loadavg_15 = 0
         self.created_node.save()
@@ -356,7 +356,7 @@ class NodeTestCase(TestCase):
         self.created_node.status = STATUS_UNKNOWN
         self.created_node.uptime = 1000
         self.created_node.last_sync = timezone.now()
-        self.created_node.loadavg_5 = ALERT_INFO_LOAD
+        self.created_node.loadavg_5 = settings.ALERT_INFO_LOAD
         self.created_node.loadavg_10 = 0
         self.created_node.loadavg_15 = 0
         self.created_node.save()

@@ -32,7 +32,11 @@ else
     exit -1
 fi
 
-./manage.py syncdb --noinput
-./manage.py loaddata sample_data.json
+case $1 in
+    --server)
+    ./manage.py syncdb --noinput
+    ./manage.py loaddata sample_data.json
+    ;;
+esac
 
 echo "Installation complete!"

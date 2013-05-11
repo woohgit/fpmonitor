@@ -1,5 +1,6 @@
 import os
 import platform
+import psutil
 
 
 def get_system_uptime_in_seconds():

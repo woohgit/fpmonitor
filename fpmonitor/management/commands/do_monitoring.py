@@ -3,7 +3,7 @@ import json
 import os
 import urllib2
 
-from fpmonitor.common import (get_distribution, get_release, get_system,
+from fpmonitor.common import (get_distribution, get_memory_usage, get_release, get_system,
                               get_system_load, get_system_uptime_in_seconds)
 
 from django.core.management.base import NoArgsCommand
@@ -21,8 +21,10 @@ class Command(NoArgsCommand):
         data['system'] = get_system()
         data['kernel'] = get_release()
         data['distribution'] = get_distribution()
+        data['memory_usage'] = get_memory_usage()
         post_data = json.dumps(data)
 
         request = urllib2.Request("%s/receive_data" % (settings.SERVER_HOST, ), data='data=%s' % post_data)
         result = urllib2.urlopen(request).read()
-        print result
+        if "NOK" in result:
+            print "Error: invalid credentials"

@@ -42,6 +42,7 @@ class WebSiteTestCase(TestCase):
         data['system'] = 'System'
         data['kernel'] = 'Kernel'
         data['distribution'] = 'Distribution'
+        data['memory_usage'] = 40
         post_data = json.dumps(data)
         self.client.post('/receive_data', {'data': post_data})
         node = Node.objects.get(name='test')
@@ -61,6 +62,7 @@ class WebSiteTestCase(TestCase):
         data['system'] = 'System'
         data['kernel'] = 'Kernel'
         data['distribution'] = 'Distribution'
+        data['memory_usage'] = 40
         data['uptime'] = 1005
         post_data = json.dumps(data)
         self.client.post('/receive_data', {'data': post_data})
@@ -285,8 +287,9 @@ class NodeTestCase(TestCase):
         self.created_node.loadavg_5 = 1
         self.created_node.loadavg_10 = 0
         self.created_node.loadavg_15 = 0
+        self.created_node.memory_usage = 0
         self.created_node.save()
-        result = self.created_node.check_alerting_level(STATUS_INFO, 1, 2)
+        result = self.created_node.check_alerting_level(STATUS_INFO, 1, 2, 40)
         self.assertTrue(result)
         node = Node.objects.get(pk=self.created_node.id)
         node.status = STATUS_INFO
@@ -298,8 +301,23 @@ class NodeTestCase(TestCase):
         self.created_node.loadavg_5 = 0
         self.created_node.loadavg_10 = 0
         self.created_node.loadavg_15 = 0
+        self.created_node.memory_usage = 0
         self.created_node.save()
-        result = self.created_node.check_alerting_level(STATUS_INFO, 1, 2)
+        result = self.created_node.check_alerting_level(STATUS_INFO, 1, 2, 40)
+        self.assertTrue(result)
+        node = Node.objects.get(pk=self.created_node.id)
+        node.status = STATUS_INFO
+
+    def test_check_alerting_level_alert_status_memory(self):
+        self.created_node.status = STATUS_UNKNOWN
+        self.created_node.uptime = 1000
+        self.created_node.last_sync = timezone.now() - timedelta(minutes=3)
+        self.created_node.loadavg_5 = 0
+        self.created_node.loadavg_10 = 0
+        self.created_node.loadavg_15 = 0
+        self.created_node.memory_usage = 85
+        self.created_node.save()
+        result = self.created_node.check_alerting_level(STATUS_INFO, 1, 2, 85)
         self.assertTrue(result)
         node = Node.objects.get(pk=self.created_node.id)
         node.status = STATUS_INFO

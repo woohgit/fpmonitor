@@ -20,6 +20,7 @@ class Node(models.Model):
     loadavg_5 = models.CharField(max_length=64, blank=True, null=True)
     loadavg_10 = models.CharField(max_length=64, blank=True, null=True)
     loadavg_15 = models.CharField(max_length=64, blank=True, null=True)
+    memory_usage = models.PositiveIntegerField(default=0)
 
     @classmethod
     def get_nodes(cls, owner):
@@ -78,7 +79,7 @@ class Node(models.Model):
             result = e
         return result
 
-    def check_alerting_level(self, status, threshold_load, threshold_seen):
+    def check_alerting_level(self, status, threshold_load, threshold_seen, threshold_memory):
         # TODO: wooh - here goes the logic!
         # ha a load nagyobb mint 5
         # ha a get_last_seen_in_minutes > 6
@@ -87,7 +88,12 @@ class Node(models.Model):
             self.save()
             return True
 
-        if (self.get_last_seen_in_minutes() >= threshold_seen):
+        if self.get_last_seen_in_minutes() >= threshold_seen:
+            self.status = status
+            self.save()
+            return True
+
+        if self.memory_usage >= threshold_memory:
             self.status = status
             self.save()
             return True
@@ -96,11 +102,11 @@ class Node(models.Model):
 
     def update_status_if_required(self):
 
-        if self.check_alerting_level(STATUS_ERROR, settings.ALERT_DANGER_LOAD, settings.ALERT_DANGER_SEEN):
+        if self.check_alerting_level(STATUS_ERROR, settings.ALERT_DANGER_LOAD, settings.ALERT_DANGER_SEEN, settings.ALERT_DANGER_MEMORY):
             return
-        if self.check_alerting_level(STATUS_WARNING, settings.ALERT_WARNING_LOAD, settings.ALERT_WARNING_SEEN):
+        if self.check_alerting_level(STATUS_WARNING, settings.ALERT_WARNING_LOAD, settings.ALERT_WARNING_SEEN, settings.ALERT_WARNING_MEMORY):
             return
-        if self.check_alerting_level(STATUS_INFO, settings.ALERT_INFO_LOAD, settings.ALERT_INFO_SEEN):
+        if self.check_alerting_level(STATUS_INFO, settings.ALERT_INFO_LOAD, settings.ALERT_INFO_SEEN, settings.ALERT_INFO_MEMORY):
             return
 
         self.status = STATUS_OK

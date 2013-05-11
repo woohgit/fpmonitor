@@ -68,6 +68,7 @@ def receive_data(request):
         node.loadavg_5 = data['loadavg'][0]
         node.loadavg_10 = data['loadavg'][1]
         node.loadavg_15 = data['loadavg'][2]
+        node.memory_usage = int(data['memory_usage'])
         node.last_sync = timezone.now()
         node.save()
         return HttpResponse("OK %s" % data, status=200)

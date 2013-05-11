@@ -10,7 +10,6 @@ DjangoSchema = schemas.get(django.get_version())
 
 
 class FpMonitorSchema(DjangoSchema, SettingsSchema):
-    virtualenv_dir = StringOption(fatal=True)
 
     class testing(Section):
         test_coverage_format = StringOption(default='html')

@@ -80,9 +80,6 @@ class Node(models.Model):
         return result
 
     def check_alerting_level(self, status, threshold_load, threshold_seen, threshold_memory):
-        # TODO: wooh - here goes the logic!
-        # ha a load nagyobb mint 5
-        # ha a get_last_seen_in_minutes > 6
         if (int(float(self.loadavg_5)) >= threshold_load or int(float(self.loadavg_10)) >= threshold_load or int(float(self.loadavg_15)) >= threshold_load):
             self.status = status
             self.save()

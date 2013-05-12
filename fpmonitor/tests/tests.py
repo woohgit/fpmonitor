@@ -495,3 +495,10 @@ class AlertingChainTestCase(TestCase):
         self.assertTrue(created)
         result = AlertingChain.objects.all()
         self.assertEquals(len(result), 1)
+
+    def test_create_alerting_chain_does_not_create_twice(self):
+        AlertingChain.create_alerting_chain(node=self.created_node, email=self.email)
+        created = AlertingChain.create_alerting_chain(node=self.created_node, email=self.email)
+        self.assertFalse(created)
+        result = AlertingChain.objects.all()
+        self.assertEquals(len(result), 1)

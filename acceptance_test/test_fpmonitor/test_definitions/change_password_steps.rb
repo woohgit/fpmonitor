@@ -1,4 +1,5 @@
 Given(/^I click on the "(.*?)" menupoint$/) do |link|
+    click_link "Settings"
     click_link link
 end
 

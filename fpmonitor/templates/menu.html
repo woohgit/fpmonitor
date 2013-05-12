@@ -1,0 +1,34 @@
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+
+          <a class="brand" href="#">fp-Monitoring System</a>
+          <div class="nav-collapse collapse">
+            <p class="navbar-text pull-right">
+              Logged in as <a href="#" class="navbar-link">{{ username }} (#{{ request.user.id }})</a> | 
+              <a href="/logout" class="navbar-link">Logut   </a>
+            </p>
+            <ul class="nav">
+            <li {% if request.get_full_path == "/index" %}class="active"{% endif %}><a href="/index">Dashboard</a></li>
+            <li {% if request.get_full_path == "/help" %}class="active"{% endif %}><a href="/help">Help</a></li>
+            <li><a href="/admin">Admin</a></li>
+            <li class="dropdown {% if request.get_full_path == "/password_change/" %}active{% endif %}">
+            <a class="dropdown-toggle" data-toggle="dropdown" href="#changelog">Settings <b class="caret"></b></a>
+            <ul class="dropdown-menu">
+              <li><a href="/password_change">Change password</a></li>
+            </ul>
+            </li>
+            </ul>
+          </div><!--/.nav-collapse -->
+        </div>
+      </div>
+    </div>
+
+  {% if test_mode %}
+  <span class="label label-warning">Warning! The test mode is ON</span>
+  {% endif %}

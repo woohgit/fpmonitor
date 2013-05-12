@@ -84,7 +84,7 @@ class Node(models.Model):
             self.save()
             return True
 
-        if self.get_last_seen_in_minutes() >= threshold_seen:
+        if ((timezone.now() - self.last_sync).seconds / 60) >= threshold_seen:
             self.status = status
             self.save()
             return True

@@ -50,7 +50,7 @@ class WebSiteTestCase(TestCase):
         self.assertEquals(node.owner, owner)
         self.assertEquals(node.os_type, 'System')
         self.assertEquals(node.kernel_version, 'Kernel')
-        self.assertEquals(node.get_last_seen_in_minutes(), 0)
+        self.assertEquals(node.get_last_seen_in_minutes(), "0 second(s)")
 
     def test_receive_data_existing_node(self):
         owner = create_adam()
@@ -72,7 +72,7 @@ class WebSiteTestCase(TestCase):
         self.assertEquals(node.os_type, 'System')
         self.assertEquals(node.uptime, 1005)
         self.assertEquals(node.kernel_version, 'Kernel')
-        self.assertEquals(node.get_last_seen_in_minutes(), 0)
+        self.assertEquals(node.get_last_seen_in_minutes(), "0 second(s)")
 
 
 class LoginTestCase(TestCase):
@@ -226,7 +226,7 @@ class NodeTestCase(TestCase):
         last_sync = now - timedelta(seconds=10)
         self.created_node.last_sync = last_sync
         result = self.created_node.get_last_seen_in_minutes()
-        self.assertEquals(result, 0)
+        self.assertEquals(result, "10 second(s)")
 
     def test_get_last_seen_in_minutes_should_return_the_diff_in_minutes(self):
         """get_last_seen_in_minutes should return diff in minutes
@@ -236,7 +236,7 @@ class NodeTestCase(TestCase):
         last_sync = now - timedelta(minutes=10)
         self.created_node.last_sync = last_sync
         result = self.created_node.get_last_seen_in_minutes()
-        self.assertEquals(result, 10)
+        self.assertEquals(result, "10 minute(s)")
 
     def test_api_node_maintenance_login_required_302(self):
         response = self.client.post('/api/v1/node/maintenance_mode', {'id': '0'})

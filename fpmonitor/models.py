@@ -69,12 +69,11 @@ class Node(models.Model):
 
     def get_last_seen_in_minutes(self):
         now = timezone.now()
-
         try:
             if self.last_sync is None:
                 result = 'N/A'
             else:
-                result = ((now - self.last_sync).seconds) / 60
+                result = self.get_uptime_string((now - self.last_sync).seconds)
         except Exception as e:
             result = e
         return result
@@ -129,7 +128,6 @@ class Node(models.Model):
         if days == 0 and hours == 0:
             return "%d minute(s)" % (minutes)
 
-        # use a bigger perspective. We're not interested in seconds as of now
         if days == 0:
             return "%d hour(s), %d minute(s)" % (hours, minutes)
 

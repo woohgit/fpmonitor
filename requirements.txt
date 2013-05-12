@@ -5,7 +5,7 @@ simplejson==2.0.9
 djangorestframework==2.2.0
 sh==1.08
 requests==1.1.0
--e git+git@github.com:prezi/django-configglue.git@d4eb5412f94fd3ee3e3ab4182edb617d8105bdd3#egg=django_configglue
+-e git+https://github.com/prezi/django-configglue.git@d4eb5412f94fd3ee3e3ab4182edb617d8105bdd3#egg=django_configglue
 psutil==0.7.1
 
 #Testing

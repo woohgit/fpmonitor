@@ -146,5 +146,16 @@ class Node(models.Model):
 
 
 class AlertingChain(models.Model):
+
     node = models.ForeignKey(Node, blank=False)
     email = models.CharField(max_length=64, blank=True, null=True)
+
+    @classmethod
+    def create_alerting_chain(cls, node, email):
+        addresses = AlertingChain.objects.filter(node=node, email=email)
+        if addresses:
+            return False
+        else:
+            chain = AlertingChain.objects.create(node=node, email=email)
+            chain.save()
+            return True

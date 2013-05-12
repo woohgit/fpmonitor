@@ -488,3 +488,10 @@ class AlertingChainTestCase(TestCase):
         self.other_owner = create_eva()
         self.node_name = 'name_01'
         self.created_node = Node.create_node(self.owner, self.node_name)
+        self.email = 'testemail@test.hu'
+
+    def test_create_alerting_chain_successful(self):
+        created = AlertingChain.create_alerting_chain(node=self.created_node, email=self.email)
+        self.assertTrue(created)
+        result = AlertingChain.objects.all()
+        self.assertEquals(len(result), 1)

@@ -1,9 +1,12 @@
 #!/bin/bash
 
 if [[ "$#" -gt 0 ]]; then
-    export MINUTE="*/$1"
+    if [[ "$1" == "--start" ]]; then
+        (crontab -l ; echo "* * * * * `pwd`/virtualenv/bin/python `pwd`/manage.py do_alerting >/dev/null 2>&1") | sort | uniq - | crontab -
+    else
+        (crontab -l | grep -v 'do_alerting') | sort | uniq - | crontab -
+    fi
 else
-    export MINUTE="*"
+    echo "Usage: ./cron_alerting.sh [--start, --stop]"
 fi
 
-(crontab -l ; echo "${MINUTE} * * * * `pwd`/virtualenv/bin/python `pwd`/manage.py do_alerting >/dev/null 2>&1") | sort | uniq - | crontab -

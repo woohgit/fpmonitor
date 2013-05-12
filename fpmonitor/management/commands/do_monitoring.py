@@ -16,7 +16,6 @@ class Command(NoArgsCommand):
         data['node_name'] = settings.NODE_NAME
         data['node_user_id'] = settings.NODE_USER_ID
         data['uptime'] = get_system_uptime_in_seconds()
-        data['uptime'] = 1000
         data['loadavg'] = get_system_load()
         data['system'] = get_system()
         data['kernel'] = get_release()

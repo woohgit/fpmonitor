@@ -311,7 +311,7 @@ class NodeTestCase(TestCase):
     def test_check_alerting_level_alert_status_memory(self):
         self.created_node.status = STATUS_UNKNOWN
         self.created_node.uptime = 1000
-        self.created_node.last_sync = timezone.now() - timedelta(minutes=3)
+        self.created_node.last_sync = 0
         self.created_node.loadavg_5 = 0
         self.created_node.loadavg_10 = 0
         self.created_node.loadavg_15 = 0

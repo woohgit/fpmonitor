@@ -62,7 +62,7 @@ class Node(models.Model):
             emails.append(self.owner.email)
         else:
             for email in alert_addresses:
-                emails.append(email)
+                emails.append(email.email)
         return emails
 
     def get_status_class(self):
@@ -147,4 +147,4 @@ class Node(models.Model):
 
 class AlertingChain(models.Model):
     node = models.ForeignKey(Node, blank=False)
-    email_address = models.CharField(max_length=64, blank=True, null=True)
+    email = models.CharField(max_length=64, blank=True, null=True)

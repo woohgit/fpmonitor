@@ -3,7 +3,7 @@ from helpers import create_adam, create_eva, login_adam, ADAM_PASSWORD, ADAM_USE
 import fpmonitor.api
 from fpmonitor.test_api.test_api import create_nodes
 from fpmonitor.consts import *
-from fpmonitor.models import Node
+from fpmonitor.models import Node, AlertingChain
 import json
 from mock import patch, Mock
 
@@ -390,6 +390,14 @@ class NodeTestCase(TestCase):
         result = self.created_node.get_alerting_addresses()
         self.assertEquals(len(result), 1)
         self.assertTrue(result[0], self.owner.email)
+
+    def test_get_alerting_addresses_with_extra_emails(self):
+        test_mail_address = 'test_email@test.hu'
+        alerting_email = AlertingChain.objects.create(node=self.created_node, email=test_mail_address)
+        alerting_email.save()
+        result = self.created_node.get_alerting_addresses()
+        self.assertEquals(len(result), 1)
+        self.assertTrue(result[0], test_mail_address)
 
 
 class TestApiTestCase(TestCase):

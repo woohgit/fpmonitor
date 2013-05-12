@@ -45,7 +45,10 @@
             </p>
             <ul class="nav">
             <li class="active"><a href="#">Dashboard</a></li>
-              <li><a href="/help">Help</a></li>
+            <li><a href="/help">Help</a></li>
+            <li><a href="/admin">Admin</a></li>
+            <li><a href="/password_change">Change password</li>
+
             {% if test_mode %}<li>
             <a href=""><span class="label label-warning">Warning! The test mode is ON</span></a>
             </li>
@@ -88,7 +91,7 @@
         <td>{{ node.memory_usage }} %</td>
         <td>{{ node.os_type }}</td>
         <td>{{ node.os_version }}</td>
-        <td>{{ node.get_last_seen_in_minutes }} minutes ago</td>
+        <td>{{ node.get_last_seen_in_minutes }} ago</td>
         <td>{{ node.get_uptime }}</td>
         </tr>
         {% endfor %}

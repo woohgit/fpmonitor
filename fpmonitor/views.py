@@ -88,3 +88,15 @@ def api_node_maintenance(request):
         return HttpResponse('OK')
     except Exception as e:
         return HttpResponse('NOK %s' % e, status=200)
+
+
+@login_required
+def show_node(request, node_id):
+    try:
+        node = Node.objects.get(pk=node_id)
+        if node.owner not in request.user:
+            return HttpResponseRedirect('/index')
+        else:
+            return render(request, 'index.html', {'node': node, 'test_mode': settings.TEST_MODE})
+    except:
+        return HttpResponseRedirect('/index')

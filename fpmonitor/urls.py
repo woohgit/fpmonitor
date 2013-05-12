@@ -14,6 +14,7 @@ urlpatterns = patterns(
     url(r'^logout$', 'fpmonitor.views.user_logout', name='logout'),
     url(r'^api/v1/node/maintenance_mode$', 'fpmonitor.views.api_node_maintenance', name='api_node_maintenance'),
     url(r'^receive_data$', 'fpmonitor.views.receive_data', name='receive_data'),
+    url(r'^node/(?P<node_id>[0-9]+)$', 'fpmonitor.views.show_node', name='show_node'),
 )
 
 urlpatterns += patterns(

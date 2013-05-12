@@ -489,6 +489,11 @@ class TestApiTestCase(TestCase):
         self.client.get('/test_api/test_mode_on')
         self.assertFalse(settings.TEST_MODE)
 
+    def test_view_node_details_redirects_when_not_owner(self):
+        self.client.get('/test_api/create_nodes/%s/%s' % (1, STATUS_OK))
+        response = self.client.get('/node/1')
+        self.assertRedirects(response, '/index', status_code=302)
+
 
 class AlertingChainTestCase(TestCase):
 

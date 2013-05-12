@@ -61,7 +61,7 @@ def receive_data(request):
         try:
             node = Node.create_node(owner, data['node_name'])
         except IntegrityError:
-            node = Node.objects.get(name=data['node_name'])
+            node = Node.objects.get(name=data['node_name'], owner=owner)
         node.kernel_version = data['kernel']
         node.uptime = data['uptime']
         node.os_type = data['system']

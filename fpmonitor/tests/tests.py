@@ -13,7 +13,7 @@ from django.test import TestCase
 from django.conf import settings
 from django.utils import timezone
 
-__all__ = ['LoginTestCase', 'NodeTestCase', 'TestApiTestCase', 'WebSiteTestCase']
+__all__ = ['LoginTestCase', 'NodeTestCase', 'TestApiTestCase', 'WebSiteTestCase', 'AlertingChainTestCase']
 
 
 class WebSiteTestCase(TestCase):
@@ -382,6 +382,15 @@ class NodeTestCase(TestCase):
         node = Node.objects.get(pk=self.created_node.id)
         node.status = STATUS_INFO
 
+    def test_get_alerting_addresses_no_extra_emails(self):
+        """
+        get_alerting_addresses should return the owner.email
+
+        """
+        result = self.created_node.get_alerting_addresses()
+        self.assertEquals(len(result), 1)
+        self.assertTrue(result[0], self.owner.email)
+
 
 class TestApiTestCase(TestCase):
 
@@ -462,3 +471,12 @@ class TestApiTestCase(TestCase):
         self.owner.save()
         self.client.get('/test_api/test_mode_on')
         self.assertFalse(settings.TEST_MODE)
+
+
+class AlertingChainTestCase(TestCase):
+
+    def setUp(self):
+        self.owner = create_adam()
+        self.other_owner = create_eva()
+        self.node_name = 'name_01'
+        self.created_node = Node.create_node(self.owner, self.node_name)

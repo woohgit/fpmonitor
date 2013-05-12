@@ -55,6 +55,16 @@ class Node(models.Model):
         else:
             return 'error'
 
+    def get_alerting_addresses(self):
+        emails = []
+        alert_addresses = AlertingChain.objects.filter(node=self)
+        if not alert_addresses:
+            emails.append(self.owner.email)
+        else:
+            for email in alert_addresses:
+                emails.append(email)
+        return emails
+
     def get_status_class(self):
         if self.status == STATUS_OK:
             return 'success'
@@ -133,3 +143,8 @@ class Node(models.Model):
 
         # use a more bigger perspective. We're not interested in minutes and seconds as of now
         return "%d day(s), %d hour(s)" % (days, hours)
+
+
+class AlertingChain(models.Model):
+    node = models.ForeignKey(Node, blank=False)
+    email_address = models.CharField(max_length=64, blank=True, null=True)

@@ -26,3 +26,4 @@ class SettingsSchema(Schema):
         alert_danger_memory = IntOption(default=95)
         notification_level = IntOption(default=0)
         subject_prefix = StringOption(default="fpMonitor")
+        mail_from = StringOption(default="info@fpmonitor.com")

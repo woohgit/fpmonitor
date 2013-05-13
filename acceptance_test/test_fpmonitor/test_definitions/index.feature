@@ -39,3 +39,9 @@ Scenario: I should not see a warning message when the system is not in test mode
     Given I am logged in
     When I disable the test mode
     Then I should not see a warning message "Warning! The test mode is ON"
+
+Scenario: Confirmation dialogue pops up when deleting a node
+    Given I am logged in
+    And I have 3 nodes with status "OK"
+    When I try to delete node 1
+    Then I should see a popup confirmation window

@@ -45,13 +45,14 @@
           <th>Version</th>
           <th>Last sync</th>
           <th>Uptime</th>
+          <th>Delete</th>
         </tr>
       </thead>
 
       <tbody>
         {% for node in node_list %}
         <tr>
-          <td><a href="#">#{{ node.id }} {{ node.name }}</a></td>
+          <td><a href="/node/{{ node.id }}">#{{ node.id }} {{ node.name }}</a></td>
           <td>
             <div id="switchname-{{ node.id }}" class="switch switch-mini" data-on="success" data-off="danger">
               <input id="node-cb-{{ node.id }}" name="node-cb-{{ node.id }}" type="checkbox" {% if not node.maintenance_mode %}checked{% endif %} />
@@ -64,6 +65,7 @@
         <td>{{ node.os_version }}</td>
         <td>{{ node.get_last_seen_in_minutes }} ago</td>
         <td>{{ node.get_uptime }}</td>
+        <td><a href="/delete_node/{{ node.id }}" class="btn" data-confirm="Are you sure you want to delete? You will loose the history for this Node.">Delete</a></td>
         </tr>
         {% endfor %}
       </tbody>
@@ -120,6 +122,20 @@
         console.log('toggled {{ node.id }}', data.value);
       });
     {% endfor %}
+
+    $(document).ready(function() {
+    $('a[data-confirm]').click(function(ev) {
+        var href = $(this).attr('href');
+
+        if (!$('#dataConfirmModal').length) {
+            $('body').append('<div id="dataConfirmModal" class="modal" role="dialog" aria-labelledby="dataConfirmLabel" aria-hidden="true"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button><h3 id="dataConfirmLabel">Please Confirm</h3></div><div class="modal-body"></div><div class="modal-footer"><button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button><a class="btn btn-primary" id="dataConfirmOK">OK</a></div></div>');
+        } 
+        $('#dataConfirmModal').find('.modal-body').text($(this).attr('data-confirm'));
+        $('#dataConfirmOK').attr('href', href);
+        $('#dataConfirmModal').modal({show:true});
+        return false;
+    });
+});
     </script>
    
 

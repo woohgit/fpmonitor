@@ -80,3 +80,14 @@ Then(/^I should not see a warning message "(.*?)"$/) do |message|
     page.should_not have_content(message)
     visit 'http://192.168.56.1:8000/test_api/test_mode_on'
 end
+
+When(/^I try to delete node (\d+)$/) do |id|
+    visit 'http://192.168.56.1:8000/index'
+    index = id.to_i() - 1
+    my_link = page.all(:xpath, "//a[contains(@href,'delete_node/')]")[index]
+    my_link.click
+end
+
+Then(/^I should see a popup confirmation window$/) do
+    page.all("#dataConfirmModal").count.should == 1
+end

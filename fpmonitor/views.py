@@ -100,3 +100,9 @@ def show_node(request, node_id):
             return render(request, 'node.html', {'node': node, 'test_mode': settings.TEST_MODE})
     except Exception as e:
         return HttpResponseRedirect('/index')
+
+
+@login_required
+def delete_node(request, node_id):
+    result = Node.delete_node(node_id, request)
+    return HttpResponseRedirect('/index')

@@ -501,6 +501,22 @@ class TestApiTestCase(TestCase):
         response = self.client.get('/node/1')
         self.assertEquals(response.status_code, 200)
 
+    def test_delete_node_successful(self):
+        self.client.get('/test_api/create_nodes/%s/%s' % (1, STATUS_OK))
+        n = Node.objects.all()[0]
+        self.client.get('/delete_node/%s' % n.id)
+        nodes = Node.objects.all()
+        self.assertEquals(len(nodes), 0)
+
+    def test_delete_node_unsuccessful(self):
+        self.client.get('/test_api/create_nodes/%s/%s' % (1, STATUS_OK))
+        n = Node.objects.all()[0]
+        self.owner = create_cecil()
+        login_cecil(self)
+        self.client.get('/delete_node/%s' % n.id)
+        nodes = Node.objects.all()
+        self.assertEquals(len(nodes), 1)
+
 
 class AlertingChainTestCase(TestCase):
 

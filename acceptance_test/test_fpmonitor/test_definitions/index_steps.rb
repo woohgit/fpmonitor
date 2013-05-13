@@ -93,5 +93,9 @@ Then(/^I should see a popup confirmation window$/) do
 end
 
 When(/^I select the "(.*?)" button$/) do |button|
-    click_button button
+    if button == "OK"
+        click_link "OK"
+    else
+        click_button button
+    end
 end

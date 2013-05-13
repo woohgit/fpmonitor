@@ -53,4 +53,9 @@ Scenario: Selecting the Cancel on the Confirmation page will cancel the deletion
     And I select the "Cancel" button
     Then I should see 3 "OK" nodes
 
-
+Scenario: Selecting the Ok on the Confirmation page delete one node
+    Given I am logged in
+    And I have 3 nodes with status "OK"
+    When I try to delete node 1
+    And I select the "OK" button
+    Then I should see 2 "OK" nodes

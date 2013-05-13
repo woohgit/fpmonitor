@@ -1,13 +1,12 @@
 import os
 import platform
 import psutil
+import time
 
 
 def get_system_uptime_in_seconds():
     try:
-        with open('/proc/uptime', 'r') as f:
-            uptime_seconds = float(f.readline().split()[0])
-            return int(uptime_seconds)
+        return int(time.time() - psutil.BOOT_TIME)
     except:
         return 0
 

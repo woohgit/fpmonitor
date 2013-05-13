@@ -150,6 +150,9 @@ class AlertingChain(models.Model):
     node = models.ForeignKey(Node, blank=False)
     email = models.CharField(max_length=64, blank=True, null=True)
 
+    def get_email(self):
+        return self.email.replace('@', '_')
+
     @classmethod
     def create_alerting_chain(cls, node, email):
         addresses = AlertingChain.objects.filter(node=node, email=email)

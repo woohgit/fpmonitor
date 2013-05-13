@@ -1,6 +1,5 @@
 from datetime import datetime, timedelta
 from helpers import create_adam, create_eva, login_adam, create_cecil, login_cecil, logout, ADAM_PASSWORD, ADAM_USERNAME, EVA_USERNAME, EVA_PASSWORD
-import fpmonitor.api
 from fpmonitor.test_api.test_api import create_nodes
 from fpmonitor.consts import *
 from fpmonitor.models import Node, AlertingChain

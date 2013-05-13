@@ -539,3 +539,11 @@ class AlertingChainTestCase(TestCase):
         self.assertFalse(created)
         result = AlertingChain.objects.all()
         self.assertEquals(len(result), 1)
+
+    def test_delete_alerting_chain_successful(self):
+        created = AlertingChain.create_alerting_chain(node=self.created_node, email=self.email)
+        self.assertTrue(created)
+        chain = AlertingChain.objects.get(node=self.created_node, email=self.email)
+        AlertingChain.delete_alerting_chain(self.created_node.owner, chain.id)
+        chains = AlertingChain.objects.all()
+        self.assertEquals(len(chains), 0)

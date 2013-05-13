@@ -59,10 +59,10 @@ class Node(models.Model):
         emails = []
         alert_addresses = AlertingChain.objects.filter(node=self)
         if not alert_addresses:
-            emails.append(self.owner.email)
+            emails.append(self.owner)
         else:
             for email in alert_addresses:
-                emails.append(email.email)
+                emails.append(email)
         return emails
 
     def get_status_class(self):
@@ -159,3 +159,15 @@ class AlertingChain(models.Model):
             chain = AlertingChain.objects.create(node=node, email=email)
             chain.save()
             return True
+
+    @classmethod
+    def delete_alerting_chain(cls, owner, id):
+        try:
+            chain = AlertingChain.objects.get(pk=id)
+            if chain.node.owner == owner:
+                chain.delete()
+                return True
+            else:
+                return False
+        except:
+            return False

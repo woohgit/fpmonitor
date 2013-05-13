@@ -16,6 +16,7 @@ urlpatterns = patterns(
     url(r'^receive_data$', 'fpmonitor.views.receive_data', name='receive_data'),
     url(r'^node/(?P<node_id>[0-9]+)$', 'fpmonitor.views.show_node', name='show_node'),
     url(r'^delete_node/(?P<node_id>[0-9]+)$', 'fpmonitor.views.delete_node', name='delete_node'),
+    url(r'^delete_address/(?P<address_id>[0-9]+)$', 'fpmonitor.views.delete_address', name='delete_address'),
 )
 
 urlpatterns += patterns(

@@ -496,6 +496,11 @@ class TestApiTestCase(TestCase):
         response = self.client.get('/node/1')
         self.assertRedirects(response, '/index', status_code=302)
 
+    def test_view_node_details_redirects_on_exception(self):
+        self.client.get('/test_api/create_nodes/%s/%s' % (1, STATUS_OK))
+        response = self.client.get('/node/00')
+        self.assertRedirects(response, '/index', status_code=302)
+
     def test_view_node_details_returns_200_when_owner(self):
         self.client.get('/test_api/create_nodes/%s/%s' % (1, STATUS_OK))
         response = self.client.get('/node/1')

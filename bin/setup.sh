@@ -19,7 +19,7 @@ source virtualenv/bin/activate
 # pip should fail, so to be sure we can install all deps
 while true;
 do
-  pip install --exists-action w -r requirements.txt
+  pip install -r requirements.txt
   if [ "$?" -eq 0 ]; then
     break;
   fi

@@ -596,3 +596,12 @@ class AlertingChainTestCase(TestCase):
         self.assertRedirects(response, '/index', status_code=302)
         chains = AlertingChain.objects.all()
         self.assertEquals(len(chains), 0)
+
+    def test_delete_address_succeessful_with_meta(self):
+        login_adam(self)
+        AlertingChain.create_alerting_chain(node=self.created_node, email=self.email)
+        chain = AlertingChain.objects.get(node=self.created_node, email=self.email)
+        response = self.client.get('/delete_address/%s' % chain.id, HTTP_REFERER='http://testserver/node/1')
+        self.assertRedirects(response, '/node/1', status_code=302)
+        chains = AlertingChain.objects.all()
+        self.assertEquals(len(chains), 0)

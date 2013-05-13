@@ -6,6 +6,8 @@ from fpmonitor.models import Node, AlertingChain
 import json
 from mock import patch, Mock
 
+from fpmonitor.mailer import send_reboot_mail
+
 from django.contrib.auth.models import User
 from django.db import IntegrityError
 from django.test import TestCase
@@ -72,6 +74,26 @@ class WebSiteTestCase(TestCase):
         self.assertEquals(node.uptime, 1005)
         self.assertEquals(node.kernel_version, 'Kernel')
         self.assertEquals(node.get_last_seen_in_minutes(), "0 second(s)")
+
+    @patch('fpmonitor.views.send_reboot_mail')
+    def test_receive_data_sends_rebooted_email(self, mock_mail):
+        owner = create_adam()
+        created_node = Node.create_node(owner, 'test')
+        created_node.uptime = 10000
+        created_node.save()
+        data = {}
+        data['node_name'] = 'test'
+        data['node_user_id'] = owner.id
+        data['loadavg'] = (1, 1, 1)
+        data['system'] = 'System'
+        data['kernel'] = 'Kernel'
+        data['distribution'] = 'Distribution'
+        data['memory_usage'] = 40
+        data['uptime'] = 10
+        post_data = json.dumps(data)
+        response = self.client.post('/receive_data', {'data': post_data})
+        node = Node.objects.get(pk=created_node.id)
+        mock_mail.assert_called_once_with(created_node)
 
 
 class LoginTestCase(TestCase):
@@ -406,6 +428,21 @@ class NodeTestCase(TestCase):
         alerting_email.save()
         result = self.created_node.get_alerting_addresses()
         self.assertEquals(len(result), 2)
+
+    @patch('fpmonitor.mailer.smtplib')
+    def test_send_reboot_mail(self, mock_smtplib):
+        mock_smtplib.SMTP = Mock()
+        result = send_reboot_mail(self.created_node)
+        self.assertTrue(result)
+        mock_smtplib.SMTP.assert_called_once_with("127.0.0.1")
+
+    @patch('fpmonitor.mailer.smtplib')
+    def test_send_reboot_mail_on_exception(self, mock_smtplib):
+        mock_smtplib.SMTP = Mock()
+        mock_smtplib.SMTP.side_effect = Exception("Boom")
+        result = send_reboot_mail(self.created_node)
+        self.assertFalse(result)
+        mock_smtplib.SMTP.assert_called_once_with("127.0.0.1")
 
 
 class TestApiTestCase(TestCase):

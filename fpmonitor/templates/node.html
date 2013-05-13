@@ -1,1 +1,168 @@
-TODO
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Bootstrap, from Twitter</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <!-- Le styles -->
+    <link href="{{ STATIC_URL }}/css/bootstrap.css" rel="stylesheet">
+    <link href="{{STATIC_URL }}/css/bootstrapSwitch.css" rel="stylesheet">
+    <style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+    </style>
+    <link href="{{ STATIC_URL }}/css/bootstrap-responsive.css" rel="stylesheet">
+
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="../assets/js/html5shiv.js"></script>
+    <![endif]-->
+
+  </head>
+
+  <body>
+
+    {% include "menu.html" %}
+
+    <div class="container">
+    <h1>Node ({{node.name }})</h1>
+    <table class="table table-striped" id="node_list">
+      <thead>
+        <tr>
+          <th>NodeID</th>
+          <th>Monitoring</th>
+          <th>Status</th>
+          <th>Load</th>
+          <th>Mem.</th>
+          <th>OS</th>
+          <th>Distrib.</th>
+          <th>Kernel</th>
+          <th>Last sync</th>
+          <th>Uptime</th>
+          <th>Delete</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr>
+          <td><a href="/node/{{ node.id }}">#{{ node.id }} {{ node.name }}</a></td>
+          <td>
+            <div id="switchname-{{ node.id }}" class="switch switch-mini" data-on="success" data-off="danger">
+              <input id="node-cb-{{ node.id }}" name="node-cb-{{ node.id }}" type="checkbox" {% if not node.maintenance_mode %}checked{% endif %} />
+            </div>
+          </td>
+        <td><span class="label label-{{ node.get_status_class }}">&nbsp; &nbsp; {{ node.get_status_text }} &nbsp; &nbsp; </span></td>
+        <td>[{{ node.loadavg_5|floatformat}}] [{{node.loadavg_10|floatformat}}] [{{node.loadavg_15|floatformat}}]</td>
+        <td>{{ node.memory_usage }} %</td>
+        <td>{{ node.os_type }}</td>
+        <td>{{ node.os_version }}</td>
+        <td>{{ node.kernel_version }}</td>
+        <td>{{ node.get_last_seen_in_minutes }} ago</td>
+        <td>{{ node.get_uptime }}</td>
+        <td><a href="/delete_node/{{ node.id }}" class="btn" data-confirm="Are you sure you want to delete? You will loose the history for this Node.">Delete</a></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h1>Notification E-mail addresses</h1>
+     <table class="table table-striped" id="node_list">
+      <thead>
+        <tr>
+          <th>E-mail address</th>
+          <th>Delete</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr>
+            <td>{{ request.user.email }} (default)</td>
+            <td>&nbsp;</td>
+        </tr>
+        {% for address in node.get_alerting_addresses %}
+            <tr>
+                <td>{{ address.email }}</td>
+                <td><a href="/delete_address/{{ address.id }}" class="btn" data-confirm="Are you sure you want to delete?">Delete</a></td>
+            </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <form class="form-address" name="form-address" id="form-address" method="POST" action="">
+        {% csrf_token %}
+        <div class="control-group">
+            <h2 class="form-signin-heading">Add new notification E-mail</h2>
+            {% csrf_token %}
+            <input type="text" id="address" name="address" class="input-block-level" placeholder="E-mail address">
+        </div>
+        <button class="btn btn-large btn-primary" type="submit" id="add" name="add">Add</button>
+    </form>
+
+
+      <!-- Example row of columns -->
+<!--       <div class="row">
+        <div class="span4">
+          <h2>Heading</h2>
+          <p>Donec id elit non mi porta gravida at eget metus. Fusce dapiqbus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
+          <p><a class="btn" href="#">View details &raquo;</a></p>
+        </div>
+        <div class="span4">
+          <h2>Heading</h2>
+          <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
+          <p><a class="btn" href="#">View details &raquo;</a></p>
+       </div>
+        <div class="span4">
+          <h2>Heading</h2>
+          <p>Donec sed odio dui. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Vestibulum id ligula porta felis euismod semper. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p>
+          <p><a class="btn" href="#">View details &raquo;</a></p>
+        </div>
+      </div> -->
+
+      <hr>
+
+      <footer>
+        <p>&copy; fp-Monitoring System 2013</p>
+      </footer>
+
+    </div> <!-- /container -->
+
+    <!-- Le javascript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="{{ STATIC_URL }}/js/jquery-1.9.1.min.js"></script>
+    <script src="{{ STATIC_URL }}/js/bootstrap.js"></script>
+    <script src="{{ STATIC_URL }}/js/bootstrapSwitch.js"></script>
+    <script>
+    {% for node in node_list %}
+      $('#switchname-{{ node.id }}').on('switch-change', function (e, data) {
+        $.ajax({
+          type: "POST",
+          url: "/api/v1/node/maintenance_mode",
+          data: { 'id': {{ node.id }}, 'mode': data.value }
+        });
+        console.log('toggled {{ node.id }}', data.value);
+      });
+    {% endfor %}
+
+    $(document).ready(function() {
+    $('a[data-confirm]').click(function(ev) {
+        var href = $(this).attr('href');
+
+        if (!$('#dataConfirmModal').length) {
+            $('body').append('<div id="dataConfirmModal" class="modal" role="dialog" aria-labelledby="dataConfirmLabel" aria-hidden="true"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button><h3 id="dataConfirmLabel">Please Confirm</h3></div><div class="modal-body"></div><div class="modal-footer"><button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button><a class="btn btn-primary" id="dataConfirmOK">OK</a></div></div>');
+        } 
+        $('#dataConfirmModal').find('.modal-body').text($(this).attr('data-confirm'));
+        $('#dataConfirmOK').attr('href', href);
+        $('#dataConfirmModal').modal({show:true});
+        return false;
+    });
+});
+    </script>
+   
+
+  </body>
+</html>

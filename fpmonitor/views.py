@@ -1,5 +1,5 @@
 from datetime import datetime
-from fpmonitor.models import Node
+from fpmonitor.models import AlertingChain, Node
 import json
 
 from consts import *
@@ -98,6 +98,9 @@ def show_node(request, node_id):
         if node.owner != request.user:
             return HttpResponseRedirect('/index')
         else:
+            address = request.POST.get('address')
+            if address:
+                AlertingChain.create_alerting_chain(node, address)
             return render(request, 'node.html', {'node': node, 'test_mode': settings.TEST_MODE})
     except Exception as e:
         return HttpResponseRedirect('/index')
@@ -107,3 +110,8 @@ def show_node(request, node_id):
 def delete_node(request, node_id):
     result = Node.delete_node(node_id, request)
     return HttpResponseRedirect('/index')
+
+
+@login_required
+def delete_address(request, address_id):
+    pass

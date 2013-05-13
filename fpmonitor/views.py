@@ -45,7 +45,7 @@ def user_login(request):
             else:
                 return render(request, 'login.html', {'error': True, 'failed_login': True})
         except Exception as e:
-            return HttpResponse("NOK %s" % request, status=402)
+            return HttpResponse("NOK %s %s" % (request, e), status=402)
 
 
 def user_logout(request):

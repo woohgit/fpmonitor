@@ -40,9 +40,10 @@
           <th>Monitoring</th>
           <th>Status</th>
           <th>Load</th>
-          <th>Mem. usage</th>
+          <th>Mem.</th>
           <th>OS</th>
-          <th>Version</th>
+          <th>Distrib.</th>
+          <th>Kernel</th>
           <th>Last sync</th>
           <th>Uptime</th>
           <th>Delete</th>
@@ -63,6 +64,7 @@
         <td>{{ node.memory_usage }} %</td>
         <td>{{ node.os_type }}</td>
         <td>{{ node.os_version }}</td>
+        <td>{{ node.kernel_version }}</td>
         <td>{{ node.get_last_seen_in_minutes }} ago</td>
         <td>{{ node.get_uptime }}</td>
         <td><a href="/delete_node/{{ node.id }}" class="btn" data-confirm="Are you sure you want to delete? You will loose the history for this Node.">Delete</a></td>

@@ -114,4 +114,5 @@ def delete_node(request, node_id):
 
 @login_required
 def delete_address(request, address_id):
-    pass
+    AlertingChain.delete_alerting_chain(request.user, address_id)
+    return HttpResponseRedirect(request.META["HTTP_REFERER"])

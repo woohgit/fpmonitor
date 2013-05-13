@@ -517,6 +517,22 @@ class TestApiTestCase(TestCase):
         nodes = Node.objects.all()
         self.assertEquals(len(nodes), 1)
 
+    def test_view_node_create_alerting_chain_succeeds(self):
+        self.client.get('/test_api/create_nodes/%s/%s' % (1, STATUS_OK))
+        self.client.post('/node/1', {'address': 'newaddress@address'})
+        # response = self.client.get('/node/1')
+        objects = AlertingChain.objects.all()
+        self.assertEquals(len(objects), 1)
+        self.assertEquals(objects[0].email, 'newaddress@address')
+
+    def test_view_node_create_alerting_chain_fails(self):
+        self.client.get('/test_api/create_nodes/%s/%s' % (1, STATUS_OK))
+        self.owner = create_cecil()
+        login_cecil(self)
+        self.client.post('/node/1', {'address': 'newaddress@address'})
+        objects = AlertingChain.objects.all()
+        self.assertEquals(len(objects), 0)
+
 
 class AlertingChainTestCase(TestCase):
 

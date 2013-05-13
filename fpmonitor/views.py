@@ -114,5 +114,11 @@ def delete_node(request, node_id):
 
 @login_required
 def delete_address(request, address_id):
-    AlertingChain.delete_alerting_chain(request.user, address_id)
-    return HttpResponseRedirect(request.META["HTTP_REFERER"])
+    try:
+        AlertingChain.delete_alerting_chain(request.user, address_id)
+        if request.META["HTTP_REFERER"]:
+            return HttpResponseRedirect(request.META["HTTP_REFERER"])
+        else:
+            return HttpResponseRedirect('/index')
+    except:
+        return HttpResponseRedirect('/index')

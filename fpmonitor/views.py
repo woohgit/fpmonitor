@@ -64,7 +64,8 @@ def receive_data(request):
             node = Node.objects.get(name=data['node_name'], owner=owner)
         node.kernel_version = data['kernel']
         node.uptime = data['uptime']
-        node.os_type = data['system']
+        node.os_type = data['system'] if data['system'] != "Darwin" else "MacOS X"
+        node.os_version = data['distribution']
         node.loadavg_5 = data['loadavg'][0]
         node.loadavg_10 = data['loadavg'][1]
         node.loadavg_15 = data['loadavg'][2]

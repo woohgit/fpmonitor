@@ -3,6 +3,7 @@ from fpmonitor.models import AlertingChain, Node
 import json
 
 from consts import *
+from fpmonitor.mailer import send_reboot_mail
 
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
@@ -62,6 +63,11 @@ def receive_data(request):
             node = Node.create_node(owner, data['node_name'])
         except IntegrityError:
             node = Node.objects.get(name=data['node_name'], owner=owner)
+
+        # if the recorded uptime is greater than the new one
+        # it means the system has been rebooted
+        if int(node.uptime) > int(data['uptime']):
+            send_reboot_mail(node)
         node.kernel_version = data['kernel']
         node.uptime = data['uptime']
         node.os_type = data['system'] if data['system'] != "Darwin" else "MacOS X"

@@ -1,5 +1,5 @@
 from datetime import datetime, timedelta
-from helpers import create_adam, create_eva, login_adam, ADAM_PASSWORD, ADAM_USERNAME, EVA_USERNAME, EVA_PASSWORD
+from helpers import create_adam, create_eva, login_adam, create_cecil, login_cecil, logout, ADAM_PASSWORD, ADAM_USERNAME, EVA_USERNAME, EVA_PASSWORD
 import fpmonitor.api
 from fpmonitor.test_api.test_api import create_nodes
 from fpmonitor.consts import *
@@ -491,8 +491,15 @@ class TestApiTestCase(TestCase):
 
     def test_view_node_details_redirects_when_not_owner(self):
         self.client.get('/test_api/create_nodes/%s/%s' % (1, STATUS_OK))
+        self.owner = create_cecil()
+        login_cecil(self)
         response = self.client.get('/node/1')
         self.assertRedirects(response, '/index', status_code=302)
+
+    def test_view_node_details_returns_200_when_owner(self):
+        self.client.get('/test_api/create_nodes/%s/%s' % (1, STATUS_OK))
+        response = self.client.get('/node/1')
+        self.assertEquals(response.status_code, 200)
 
 
 class AlertingChainTestCase(TestCase):

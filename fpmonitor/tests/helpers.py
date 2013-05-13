@@ -9,6 +9,9 @@ ADAM_PASSWORD = 'adamka'
 EVA_USERNAME = 'eva'
 EVA_EMAIL = 'eva@adam.hu'
 EVA_PASSWORD = 'evacska'
+CECIL_USERNAME = 'cecil'
+CECIL_PASSWORD = 'cilike'
+CECIL_EMAIL = 'cilike@cilus.hu'
 
 
 def create_adam():
@@ -30,6 +33,15 @@ def create_eva():
     return user
 
 
+def create_cecil():
+    user = User.objects.create_user(username=CECIL_USERNAME, password=CECIL_PASSWORD, email=CECIL_EMAIL)
+    user.first_name = 'Cilus'
+    user.is_active = True
+    user.is_staff = False
+    user.save()
+    return user
+
+
 def create_nodes(owner, count=1):
     nodes = []
     for i in range(count):
@@ -42,3 +54,17 @@ def create_nodes(owner, count=1):
 def login_adam(testcase):
     login = testcase.client.login(username=ADAM_USERNAME, password=ADAM_PASSWORD)
     testcase.failUnless(login, 'Could not log in')
+
+
+def login_eva(testcase):
+    login = testcase.client.login(username=EVA_USERNAME, password=EVA_PASSWORD)
+    testcase.failUnless(login, 'Could not log in')
+
+
+def login_cecil(testcase):
+    login = testcase.client.login(username=CECIL_USERNAME, password=CECIL_PASSWORD)
+    testcase.failUnless(login, 'Could not log in')
+
+
+def logout(testcase):
+    testcase.client.logout()

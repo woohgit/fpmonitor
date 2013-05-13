@@ -94,9 +94,9 @@ def api_node_maintenance(request):
 def show_node(request, node_id):
     try:
         node = Node.objects.get(pk=node_id)
-        if node.owner not in request.user:
+        if node.owner != request.user:
             return HttpResponseRedirect('/index')
         else:
-            return render(request, 'index.html', {'node': node, 'test_mode': settings.TEST_MODE})
-    except:
+            return render(request, 'node.html', {'node': node, 'test_mode': settings.TEST_MODE})
+    except Exception as e:
         return HttpResponseRedirect('/index')

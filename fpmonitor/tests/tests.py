@@ -560,6 +560,25 @@ class AlertingChainTestCase(TestCase):
         created = AlertingChain.create_alerting_chain(node=self.created_node, email=self.email)
         self.assertTrue(created)
         chain = AlertingChain.objects.get(node=self.created_node, email=self.email)
-        AlertingChain.delete_alerting_chain(self.created_node.owner, chain.id)
+        result = AlertingChain.delete_alerting_chain(self.created_node.owner, chain.id)
+        self.assertTrue(result)
         chains = AlertingChain.objects.all()
         self.assertEquals(len(chains), 0)
+
+    def test_delete_alerting_chain_fails(self):
+        created = AlertingChain.create_alerting_chain(node=self.created_node, email=self.email)
+        self.assertTrue(created)
+        chain = AlertingChain.objects.get(node=self.created_node, email=self.email)
+        result = AlertingChain.delete_alerting_chain(self.other_owner, chain.id)
+        self.assertFalse(result)
+        chains = AlertingChain.objects.all()
+        self.assertEquals(len(chains), 1)
+
+    def test_delete_alerting_chain_fails_exception(self):
+        created = AlertingChain.create_alerting_chain(node=self.created_node, email=self.email)
+        self.assertTrue(created)
+        chain = AlertingChain.objects.get(node=self.created_node, email=self.email)
+        result = AlertingChain.delete_alerting_chain('owner', chain.id)
+        self.assertFalse(result)
+        chains = AlertingChain.objects.all()
+        self.assertEquals(len(chains), 1)

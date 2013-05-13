@@ -45,3 +45,12 @@ Scenario: Confirmation dialogue pops up when deleting a node
     And I have 3 nodes with status "OK"
     When I try to delete node 1
     Then I should see a popup confirmation window
+
+Scenario: Selecting the Cancel on the Confirmation page will cancel the deletion of the node
+    Given I am logged in
+    And I have 3 nodes with status "OK"
+    When I try to delete node 1
+    And I select the "Cancel" button
+    Then I should see 3 "OK" nodes
+
+

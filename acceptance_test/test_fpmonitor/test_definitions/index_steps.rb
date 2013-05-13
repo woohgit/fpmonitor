@@ -91,3 +91,7 @@ end
 Then(/^I should see a popup confirmation window$/) do
     page.all("#dataConfirmModal").count.should == 1
 end
+
+When(/^I select the "(.*?)" button$/) do |button|
+    click_button button
+end

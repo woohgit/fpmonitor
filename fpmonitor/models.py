@@ -43,6 +43,7 @@ class Node(models.Model):
         except:
             return False
 
+    @classmethod
     def cls_get_status_text(cls, status):
         if status == STATUS_OK:
             return 'ok'

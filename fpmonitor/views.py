@@ -1,5 +1,5 @@
 from datetime import datetime
-from fpmonitor.models import AlertingChain, Node
+from fpmonitor.models import AlertingChain, AlertLog, Node
 import json
 
 from consts import *
@@ -21,6 +21,12 @@ def home(request):
         return HttpResponseRedirect('/index')
     else:
         return HttpResponseRedirect('/login')
+
+
+@login_required
+def show_alert_logs(request):
+    history_list = AlertLog.objects.filter(node__owner=request.user).order_by("-event_date")
+    return render(request, 'history.html', {'history_list': history_list, 'test_mode': settings.TEST_MODE})
 
 
 @login_required

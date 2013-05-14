@@ -16,13 +16,16 @@
             <ul class="nav">
             <li {% if request.get_full_path == "/index" %}class="active"{% endif %}><a href="/index">Dashboard</a></li>
             <li {% if request.get_full_path == "/help" %}class="active"{% endif %}><a href="/help">Help</a></li>
+            {% if request.user.is_staff %}
             <li><a href="/admin">Admin</a></li>
+            {% endif %}
             <li class="dropdown {% if request.get_full_path == "/password_change/" %}active{% endif %}">
             <a class="dropdown-toggle" data-toggle="dropdown" href="#changelog">Settings <b class="caret"></b></a>
             <ul class="dropdown-menu">
               <li><a href="/password_change">Change password</a></li>
             </ul>
             </li>
+            <li {% if request.get_full_path == "/alert_logs" %}class="active"{% endif %}><a href="/alert_logs">Alert logs</a></li>
             </ul>
           </div><!--/.nav-collapse -->
         </div>

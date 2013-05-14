@@ -68,6 +68,12 @@ class WebSiteTestCase(TestCase):
         response = self.client.get('/')
         self.assertRedirects(response, '/index', status_code=302)
 
+    def test_alert_logs_rendered(self):
+        create_adam()
+        login_adam(self)
+        response = self.client.get('/alert_logs')
+        self.assertEquals(response.status_code, 200)
+
     def test_receive_data_new_node(self):
         owner = create_adam()
         data = {}

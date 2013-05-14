@@ -318,7 +318,8 @@ class NodeTestCase(TestCase):
         result = Node.get_uptime_string(3459601)
         self.assertEquals("40 day(s), 1 hour(s)", result)
 
-    def test_check_alerting_level_alert_status_load(self):
+    @patch('fpmonitor.models.send_alerting_mail')
+    def test_check_alerting_level_alert_status_load(self, mock_send_alerting_mail):
         self.created_node.status = STATUS_UNKNOWN
         self.created_node.uptime = 1000
         self.created_node.last_sync = timezone.now()
@@ -331,8 +332,10 @@ class NodeTestCase(TestCase):
         self.assertTrue(result)
         node = Node.objects.get(pk=self.created_node.id)
         node.status = STATUS_INFO
+        mock_send_alerting_mail.assert_called_once_with(self.created_node, STATUS_UNKNOWN)
 
-    def test_check_alerting_level_alert_status_seen(self):
+    @patch('fpmonitor.models.send_alerting_mail')
+    def test_check_alerting_level_alert_status_seen(self, mock_send_alerting_mail):
         self.created_node.status = STATUS_UNKNOWN
         self.created_node.uptime = 1000
         self.created_node.last_sync = timezone.now() - timedelta(minutes=3)
@@ -345,8 +348,10 @@ class NodeTestCase(TestCase):
         self.assertTrue(result)
         node = Node.objects.get(pk=self.created_node.id)
         node.status = STATUS_INFO
+        mock_send_alerting_mail.assert_called_once_with(self.created_node, STATUS_UNKNOWN)
 
-    def test_check_alerting_level_alert_status_memory(self):
+    @patch('fpmonitor.models.send_alerting_mail')
+    def test_check_alerting_level_alert_status_memory(self, mock_send_alerting_mail):
         self.created_node.status = STATUS_UNKNOWN
         self.created_node.uptime = 1000
         self.created_node.last_sync = timezone.now()
@@ -359,6 +364,106 @@ class NodeTestCase(TestCase):
         self.assertTrue(result)
         node = Node.objects.get(pk=self.created_node.id)
         node.status = STATUS_INFO
+        mock_send_alerting_mail.assert_called_once_with(self.created_node, STATUS_UNKNOWN)
+
+    @patch('fpmonitor.models.send_alerting_mail')
+    def test_check_alerting_level_does_not_alert_status_load(self, mock_send_alerting_mail):
+        self.created_node.status = STATUS_UNKNOWN
+        self.created_node.uptime = 1000
+        self.created_node.last_sync = timezone.now()
+        self.created_node.loadavg_5 = 1
+        self.created_node.loadavg_10 = 0
+        self.created_node.loadavg_15 = 0
+        self.created_node.memory_usage = 0
+        self.created_node.maintenance_mode = True
+        self.created_node.save()
+        result = self.created_node.check_alerting_level(STATUS_INFO, 1, 2, 40)
+        self.assertTrue(result)
+        node = Node.objects.get(pk=self.created_node.id)
+        node.status = STATUS_INFO
+        mock_send_alerting_mail.assert_has_calls([])
+
+    @patch('fpmonitor.models.send_alerting_mail')
+    def test_check_alerting_level_does_not_alert_status_seen(self, mock_send_alerting_mail):
+        self.created_node.status = STATUS_UNKNOWN
+        self.created_node.uptime = 1000
+        self.created_node.last_sync = timezone.now() - timedelta(minutes=3)
+        self.created_node.loadavg_5 = 0
+        self.created_node.loadavg_10 = 0
+        self.created_node.loadavg_15 = 0
+        self.created_node.memory_usage = 0
+        self.created_node.maintenance_mode = True
+        self.created_node.save()
+        result = self.created_node.check_alerting_level(STATUS_INFO, 1, 2, 40)
+        self.assertTrue(result)
+        node = Node.objects.get(pk=self.created_node.id)
+        node.status = STATUS_INFO
+        mock_send_alerting_mail.assert_has_calls([])
+
+    @patch('fpmonitor.models.send_alerting_mail')
+    def test_check_alerting_level_does_not_alert_status_memory(self, mock_send_alerting_mail):
+        self.created_node.status = STATUS_UNKNOWN
+        self.created_node.uptime = 1000
+        self.created_node.last_sync = timezone.now()
+        self.created_node.loadavg_5 = 0
+        self.created_node.loadavg_10 = 0
+        self.created_node.loadavg_15 = 0
+        self.created_node.memory_usage = 85
+        self.created_node.maintenance_mode = True
+        self.created_node.save()
+        result = self.created_node.check_alerting_level(STATUS_INFO, 1, 2, 85)
+        self.assertTrue(result)
+        node = Node.objects.get(pk=self.created_node.id)
+        node.status = STATUS_INFO
+        mock_send_alerting_mail.assert_has_calls([])
+
+    @patch('fpmonitor.models.send_alerting_mail')
+    def test_check_alerting_level_does_not_alert_same_status_status_load(self, mock_send_alerting_mail):
+        self.created_node.status = STATUS_INFO
+        self.created_node.uptime = 1000
+        self.created_node.last_sync = timezone.now()
+        self.created_node.loadavg_5 = 1
+        self.created_node.loadavg_10 = 0
+        self.created_node.loadavg_15 = 0
+        self.created_node.memory_usage = 0
+        self.created_node.save()
+        result = self.created_node.check_alerting_level(STATUS_INFO, 1, 2, 40)
+        self.assertTrue(result)
+        node = Node.objects.get(pk=self.created_node.id)
+        node.status = STATUS_INFO
+        mock_send_alerting_mail.assert_has_calls([])
+
+    @patch('fpmonitor.models.send_alerting_mail')
+    def test_check_alerting_level_does_not_alert_same_status_status_seen(self, mock_send_alerting_mail):
+        self.created_node.status = STATUS_INFO
+        self.created_node.uptime = 1000
+        self.created_node.last_sync = timezone.now() - timedelta(minutes=3)
+        self.created_node.loadavg_5 = 0
+        self.created_node.loadavg_10 = 0
+        self.created_node.loadavg_15 = 0
+        self.created_node.memory_usage = 0
+        self.created_node.save()
+        result = self.created_node.check_alerting_level(STATUS_INFO, 1, 2, 40)
+        self.assertTrue(result)
+        node = Node.objects.get(pk=self.created_node.id)
+        node.status = STATUS_INFO
+        mock_send_alerting_mail.assert_has_calls([])
+
+    @patch('fpmonitor.models.send_alerting_mail')
+    def test_check_alerting_level_does_not_alert_same_status_status_memory(self, mock_send_alerting_mail):
+        self.created_node.status = STATUS_INFO
+        self.created_node.uptime = 1000
+        self.created_node.last_sync = timezone.now()
+        self.created_node.loadavg_5 = 0
+        self.created_node.loadavg_10 = 0
+        self.created_node.loadavg_15 = 0
+        self.created_node.memory_usage = 85
+        self.created_node.save()
+        result = self.created_node.check_alerting_level(STATUS_INFO, 1, 2, 85)
+        self.assertTrue(result)
+        node = Node.objects.get(pk=self.created_node.id)
+        node.status = STATUS_INFO
+        mock_send_alerting_mail.assert_has_calls([])
 
     def test_update_status_if_required(self):
         self.created_node.status = STATUS_UNKNOWN

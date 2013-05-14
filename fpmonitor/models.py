@@ -1,5 +1,6 @@
 from django.utils import timezone
 from fpmonitor.consts import *
+from fpmonitor.mailer import send_alerting_mail
 from django.contrib.auth.models import User
 from django.db import models, IntegrityError
 from django.conf import settings
@@ -103,16 +104,22 @@ class Node(models.Model):
 
     def check_alerting_level(self, status, threshold_load, threshold_seen, threshold_memory):
         if (int(float(self.loadavg_5)) >= threshold_load or int(float(self.loadavg_10)) >= threshold_load or int(float(self.loadavg_15)) >= threshold_load):
+            if self.status != status and not self.maintenance_mode:
+                send_alerting_mail(self, self.status)
             self.status = status
             self.save()
             return True
 
         if ((timezone.now() - self.last_sync).seconds / 60) >= threshold_seen:
+            if self.status != status and not self.maintenance_mode:
+                send_alerting_mail(self, self.status)
             self.status = status
             self.save()
             return True
 
         if self.memory_usage >= threshold_memory:
+            if self.status != status and not self.maintenance_mode:
+                send_alerting_mail(self, self.status)
             self.status = status
             self.save()
             return True
@@ -187,3 +194,9 @@ class AlertingChain(models.Model):
                 return False
         except:
             return False
+
+
+class AlertLog(models.Model):
+    node = models.ForeignKey(Node, blank=False)
+    models.DateTimeField(null=True, blank=True, default=timezone.now())
+    status = models.PositiveIntegerField(choices=STATUS_CHOICES, default=STATUS_UNKNOWN)

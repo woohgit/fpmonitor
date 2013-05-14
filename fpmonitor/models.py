@@ -204,6 +204,10 @@ class AlertLog(models.Model):
     event_date = models.DateTimeField(null=True, blank=True, default=timezone.now())
     reported_status = models.PositiveIntegerField(choices=STATUS_CHOICES)
 
+    @classmethod
+    def create_alert_log(cls, node):
+        AlertLog.objects.create(node=node, reported_status=node.status)
+
     def get_status_text(self):
         return self.node.cls_get_status_text(self.reported_status)
 

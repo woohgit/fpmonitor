@@ -106,22 +106,22 @@ class Node(models.Model):
         if (int(float(self.loadavg_5)) >= threshold_load or int(float(self.loadavg_10)) >= threshold_load or int(float(self.loadavg_15)) >= threshold_load):
             if self.status != status and not self.maintenance_mode:
                 send_alerting_mail(self, self.status)
-            self.status = status
-            self.save()
+                self.status = status
+                self.save()
             return True
 
         if ((timezone.now() - self.last_sync).seconds / 60) >= threshold_seen:
             if self.status != status and not self.maintenance_mode:
                 send_alerting_mail(self, self.status)
-            self.status = status
-            self.save()
+                self.status = status
+                self.save()
             return True
 
         if self.memory_usage >= threshold_memory:
             if self.status != status and not self.maintenance_mode:
                 send_alerting_mail(self, self.status)
-            self.status = status
-            self.save()
+                self.status = status
+                self.save()
             return True
 
         return False

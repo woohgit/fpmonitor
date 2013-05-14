@@ -499,6 +499,63 @@ class NodeTestCase(TestCase):
         node.status = STATUS_INFO
         mock_send_alerting_mail.assert_has_calls([])
 
+    @patch('fpmonitor.models.send_alerting_mail')
+    def test_check_alerting_level_alert_status_load_already_reported(self, mock_send_alerting_mail):
+        self.created_node.status = STATUS_INFO
+        self.created_node.uptime = 1000
+        self.created_node.last_sync = timezone.now()
+        self.created_node.loadavg_5 = 1
+        self.created_node.loadavg_10 = 0
+        self.created_node.loadavg_15 = 0
+        self.created_node.memory_usage = 0
+        self.created_node.save()
+        AlertLog.create_alert_log(self.created_node)
+        self.created_node.status = STATUS_UNKNOWN
+        self.created_node.save()
+        result = self.created_node.check_alerting_level(STATUS_INFO, 1, 2, 40)
+        self.assertTrue(result)
+        node = Node.objects.get(pk=self.created_node.id)
+        self.assertEquals(node.status, STATUS_UNKNOWN)
+        mock_send_alerting_mail.assert_has_calls([])
+
+    @patch('fpmonitor.models.send_alerting_mail')
+    def test_check_alerting_level_alert_status_seen_already_reported(self, mock_send_alerting_mail):
+        self.created_node.status = STATUS_INFO
+        self.created_node.uptime = 1000
+        self.created_node.last_sync = timezone.now() - timedelta(minutes=3)
+        self.created_node.loadavg_5 = 0
+        self.created_node.loadavg_10 = 0
+        self.created_node.loadavg_15 = 0
+        self.created_node.memory_usage = 0
+        self.created_node.save()
+        AlertLog.create_alert_log(self.created_node)
+        self.created_node.status = STATUS_UNKNOWN
+        self.created_node.save()
+        result = self.created_node.check_alerting_level(STATUS_INFO, 1, 2, 40)
+        self.assertTrue(result)
+        node = Node.objects.get(pk=self.created_node.id)
+        self.assertEquals(node.status, STATUS_UNKNOWN)
+        mock_send_alerting_mail.assert_has_calls([])
+
+    @patch('fpmonitor.models.send_alerting_mail')
+    def test_check_alerting_level_alert_status_memory_already_reported(self, mock_send_alerting_mail):
+        self.created_node.status = STATUS_INFO
+        self.created_node.uptime = 1000
+        self.created_node.last_sync = timezone.now()
+        self.created_node.loadavg_5 = 0
+        self.created_node.loadavg_10 = 0
+        self.created_node.loadavg_15 = 0
+        self.created_node.memory_usage = 85
+        self.created_node.save()
+        AlertLog.create_alert_log(self.created_node)
+        self.created_node.status = STATUS_UNKNOWN
+        self.created_node.save()
+        result = self.created_node.check_alerting_level(STATUS_INFO, 1, 2, 85)
+        self.assertTrue(result)
+        node = Node.objects.get(pk=self.created_node.id)
+        self.assertEquals(node.status, STATUS_UNKNOWN)
+        mock_send_alerting_mail.assert_has_calls([])
+
     def test_update_status_if_required(self):
         self.created_node.status = STATUS_UNKNOWN
         self.created_node.uptime = 1000
@@ -509,7 +566,7 @@ class NodeTestCase(TestCase):
         self.created_node.save()
         self.created_node.update_status_if_required()
         node = Node.objects.get(pk=self.created_node.id)
-        node.status = STATUS_OK
+        self.assertEquals(node.status, STATUS_OK)
 
     def test_update_status_if_required_load(self):
         self.created_node.status = STATUS_UNKNOWN
@@ -521,7 +578,7 @@ class NodeTestCase(TestCase):
         self.created_node.save()
         self.created_node.update_status_if_required()
         node = Node.objects.get(pk=self.created_node.id)
-        node.status = STATUS_INFO
+        self.assertEquals(node.status, STATUS_INFO)
 
     def test_update_status_if_required_error(self):
         self.created_node.status = STATUS_UNKNOWN
@@ -533,9 +590,9 @@ class NodeTestCase(TestCase):
         self.created_node.save()
         self.created_node.update_status_if_required()
         node = Node.objects.get(pk=self.created_node.id)
-        node.status = STATUS_ERROR
+        self.assertEquals(node.status, STATUS_ERROR)
 
-    def test_update_status_if_required_warinng(self):
+    def test_update_status_if_required_warning(self):
         self.created_node.status = STATUS_UNKNOWN
         self.created_node.uptime = 1000
         self.created_node.last_sync = timezone.now()
@@ -545,7 +602,7 @@ class NodeTestCase(TestCase):
         self.created_node.save()
         self.created_node.update_status_if_required()
         node = Node.objects.get(pk=self.created_node.id)
-        node.status = STATUS_WARNING
+        self.assertEquals(node.status, STATUS_WARNING)
 
     def test_update_status_if_required_info(self):
         self.created_node.status = STATUS_UNKNOWN
@@ -557,7 +614,7 @@ class NodeTestCase(TestCase):
         self.created_node.save()
         self.created_node.update_status_if_required()
         node = Node.objects.get(pk=self.created_node.id)
-        node.status = STATUS_INFO
+        self.assertEquals(node.status, STATUS_INFO)
 
     def test_get_alerting_addresses_no_extra_emails(self):
         """

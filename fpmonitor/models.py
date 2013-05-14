@@ -198,5 +198,22 @@ class AlertingChain(models.Model):
 
 class AlertLog(models.Model):
     node = models.ForeignKey(Node, blank=False)
-    models.DateTimeField(null=True, blank=True, default=timezone.now())
-    status = models.PositiveIntegerField(choices=STATUS_CHOICES, default=STATUS_UNKNOWN)
+    event_date = models.DateTimeField(null=True, blank=True, default=timezone.now())
+    reported_status = models.PositiveIntegerField(choices=STATUS_CHOICES)
+
+    @classmethod
+    def create_alert_log(cls, node):
+        AlertLog.objects.create(node=node, reported_status=node.status)
+
+    @classmethod
+    def alerted_recently(cls, node, status):
+        now = timezone.now()
+        alerts = AlertLog.objects.filter(node=node, reported_status=status).order_by('-event_date')
+        if alerts:
+            alert = alerts[0]
+            if (now - alert.event_date).seconds / 60 > settings.ALERT_QUIET_PERIOD_MINUTES:
+                return False
+            else:
+                return True
+        else:
+            return False

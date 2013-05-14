@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 from helpers import create_adam, create_eva, login_adam, create_cecil, login_cecil, logout, ADAM_PASSWORD, ADAM_USERNAME, EVA_USERNAME, EVA_PASSWORD
 from fpmonitor.test_api.test_api import create_nodes
 from fpmonitor.consts import *
-from fpmonitor.models import Node, AlertingChain
+from fpmonitor.models import Node, AlertingChain, AlertLog
 import json
 from mock import patch, Mock
 
@@ -15,7 +15,41 @@ from django.test import TestCase
 from django.conf import settings
 from django.utils import timezone
 
-__all__ = ['LoginTestCase', 'NodeTestCase', 'TestApiTestCase', 'WebSiteTestCase', 'AlertingChainTestCase']
+__all__ = ['LoginTestCase', 'NodeTestCase', 'TestApiTestCase', 'WebSiteTestCase', 'AlertingChainTestCase', 'AlertLogTestCase']
+
+
+class AlertLogTestCase(TestCase):
+
+    def setUp(self):
+        self.owner = create_adam()
+        self.other_owner = create_eva()
+        self.node_name = 'name_01'
+        self.created_node = Node.create_node(self.owner, self.node_name)
+
+    def test_create_alert_log(self):
+        AlertLog.create_alert_log(self.created_node)
+        self.assertEquals(len(AlertLog.objects.all()), 1)
+        log = AlertLog.objects.get(node=self.created_node)
+        self.assertEquals(log.reported_status, self.created_node.status)
+
+    def test_alerted_recently_no_node(self):
+        result = AlertLog.alerted_recently(self.created_node, self.created_node.status)
+        self.assertFalse(result)
+
+    def test_alerted_recently_node_old_alert_record(self):
+        AlertLog.create_alert_log(self.created_node)
+        self.assertEquals(len(AlertLog.objects.all()), 1)
+        log = AlertLog.objects.get(node=self.created_node)
+        log.event_date = timezone.now() - timedelta(hours=1)
+        log.save()
+        result = AlertLog.alerted_recently(self.created_node, self.created_node.status)
+        self.assertFalse(result)
+
+    def test_alerted_recently_node(self):
+        AlertLog.create_alert_log(self.created_node)
+        self.assertEquals(len(AlertLog.objects.all()), 1)
+        result = AlertLog.alerted_recently(self.created_node, self.created_node.status)
+        self.assertTrue(result)
 
 
 class WebSiteTestCase(TestCase):

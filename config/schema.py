@@ -27,3 +27,4 @@ class SettingsSchema(Schema):
         notification_level = IntOption(default=0)
         subject_prefix = StringOption(default="fpMonitor")
         mail_from = StringOption(default="info@fpmonitor.com")
+        alert_quiet_period_minutes = IntOption(default=30)

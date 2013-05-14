@@ -43,6 +43,18 @@ class Node(models.Model):
         except:
             return False
 
+    def cls_get_status_text(cls, status):
+        if status == STATUS_OK:
+            return 'ok'
+        elif status == STATUS_UNKNOWN:
+            return 'unknown'
+        elif status == STATUS_INFO:
+            return 'info'
+        elif status == STATUS_WARNING:
+            return 'warning'
+        else:
+            return 'error'
+
     def get_status_text(self):
         if self.status == STATUS_OK:
             return 'ok'

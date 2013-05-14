@@ -1,3 +1,4 @@
+import string
 from datetime import datetime, timedelta
 from helpers import create_adam, create_eva, login_adam, create_cecil, login_cecil, logout, ADAM_PASSWORD, ADAM_USERNAME, EVA_USERNAME, EVA_PASSWORD
 from fpmonitor.test_api.test_api import create_nodes
@@ -6,7 +7,7 @@ from fpmonitor.models import Node, AlertingChain
 import json
 from mock import patch, Mock
 
-from fpmonitor.mailer import send_reboot_mail
+from fpmonitor.mailer import send_alerting_mail, send_reboot_mail
 
 from django.contrib.auth.models import User
 from django.db import IntegrityError
@@ -194,6 +195,22 @@ class NodeTestCase(TestCase):
     def test_node_get_status_text_error(self):
         self.created_node.status = STATUS_ERROR
         result = self.created_node.get_status_text()
+        self.assertEquals(result, 'error')
+
+    def test_node_get_cls_status_text(self):
+        result = Node.cls_get_status_text(STATUS_UNKNOWN)
+        self.assertEquals(result, 'unknown')
+
+        result = Node.cls_get_status_text(STATUS_OK)
+        self.assertEquals(result, 'ok')
+
+        result = Node.cls_get_status_text(STATUS_INFO)
+        self.assertEquals(result, 'info')
+
+        result = Node.cls_get_status_text(STATUS_WARNING)
+        self.assertEquals(result, 'warning')
+
+        result = Node.cls_get_status_text(STATUS_ERROR)
         self.assertEquals(result, 'error')
 
     def test_node_get_status_class_unknown(self):
@@ -442,6 +459,18 @@ class NodeTestCase(TestCase):
         mock_smtplib.SMTP.side_effect = Exception("Boom")
         result = send_reboot_mail(self.created_node)
         self.assertFalse(result)
+        mock_smtplib.SMTP.assert_called_once_with("127.0.0.1")
+
+    @patch('fpmonitor.mailer.smtplib')
+    @patch('fpmonitor.mailer.string')
+    def test_send_alerting_mail(self, mock_string, mock_smtplib):
+        mock_smtplib.SMTP = Mock()
+        mock_string.join = Mock()
+        self.created_node.status = STATUS_WARNING
+        self.created_node.save()
+        result = send_alerting_mail(self.created_node, STATUS_INFO)
+        self.assertTrue(result)
+        mock_string.join.assert_called_once_with(('From: info@fpmonitor.com', "To: ['adam@adam.hu']", 'Subject: [monitoring] [warning] name_01 status', '', "Your node's [name_01] status has been changed from info to warning\n"), '\r\n')
         mock_smtplib.SMTP.assert_called_once_with("127.0.0.1")
 
 

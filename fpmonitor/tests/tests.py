@@ -367,6 +367,7 @@ class NodeTestCase(TestCase):
         node = Node.objects.get(pk=self.created_node.id)
         node.status = STATUS_INFO
         mock_send_alerting_mail.assert_called_once_with(self.created_node, STATUS_UNKNOWN)
+        self.assertEquals(len(AlertLog.objects.all()), 1)
 
     @patch('fpmonitor.models.send_alerting_mail')
     def test_check_alerting_level_alert_status_seen(self, mock_send_alerting_mail):
@@ -383,6 +384,7 @@ class NodeTestCase(TestCase):
         node = Node.objects.get(pk=self.created_node.id)
         node.status = STATUS_INFO
         mock_send_alerting_mail.assert_called_once_with(self.created_node, STATUS_UNKNOWN)
+        self.assertEquals(len(AlertLog.objects.all()), 1)
 
     @patch('fpmonitor.models.send_alerting_mail')
     def test_check_alerting_level_alert_status_memory(self, mock_send_alerting_mail):
@@ -399,6 +401,7 @@ class NodeTestCase(TestCase):
         node = Node.objects.get(pk=self.created_node.id)
         node.status = STATUS_INFO
         mock_send_alerting_mail.assert_called_once_with(self.created_node, STATUS_UNKNOWN)
+        self.assertEquals(len(AlertLog.objects.all()), 1)
 
     @patch('fpmonitor.models.send_alerting_mail')
     def test_check_alerting_level_does_not_alert_status_load(self, mock_send_alerting_mail):

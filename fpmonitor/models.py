@@ -108,6 +108,7 @@ class Node(models.Model):
                 send_alerting_mail(self, self.status)
                 self.status = status
                 self.save()
+                AlertLog.create_alert_log(self)
             return True
 
         if ((timezone.now() - self.last_sync).seconds / 60) >= threshold_seen:
@@ -115,6 +116,7 @@ class Node(models.Model):
                 send_alerting_mail(self, self.status)
                 self.status = status
                 self.save()
+                AlertLog.create_alert_log(self)
             return True
 
         if self.memory_usage >= threshold_memory:
@@ -122,6 +124,7 @@ class Node(models.Model):
                 send_alerting_mail(self, self.status)
                 self.status = status
                 self.save()
+                AlertLog.create_alert_log(self)
             return True
 
         return False

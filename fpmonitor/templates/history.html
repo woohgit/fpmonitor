@@ -44,7 +44,7 @@
         {% for history in history_list %}
         <tr>
           <td><a href="/node/{{ history.node.id }}">#{{ history.node.id }} {{ history.node.name }}</a></td>
-          <td>{{ history.reported_status }} </td>
+          <td>{{ history.get_status_text }}</td>
           <td>{{ history.event_date }}</td>
         </tr>
         {% endfor %}

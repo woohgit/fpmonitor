@@ -7,7 +7,7 @@
             <span class="icon-bar"></span>
           </button>
 
-          <a class="brand" href="#">fp-Monitoring System</a>
+          <a class="brand" href="/index">fp-Monitoring System</a>
           <div class="nav-collapse collapse">
             <p class="navbar-text pull-right">
               Logged in as <a href="#" class="navbar-link">{{ username }} (#{{ request.user.id }})</a> | 
@@ -15,17 +15,16 @@
             </p>
             <ul class="nav">
             <li {% if request.get_full_path == "/index" %}class="active"{% endif %}><a href="/index">Dashboard</a></li>
-            <li {% if request.get_full_path == "/help" %}class="active"{% endif %}><a href="/help">Help</a></li>
             {% if request.user.is_staff %}
             <li><a href="/admin">Admin</a></li>
             {% endif %}
+            <li {% if request.get_full_path == "/alert_logs" %}class="active"{% endif %}><a href="/alert_logs">Alert logs</a></li>
             <li class="dropdown {% if request.get_full_path == "/password_change/" %}active{% endif %}">
             <a class="dropdown-toggle" data-toggle="dropdown" href="#changelog">Settings <b class="caret"></b></a>
             <ul class="dropdown-menu">
               <li><a href="/password_change">Change password</a></li>
             </ul>
             </li>
-            <li {% if request.get_full_path == "/alert_logs" %}class="active"{% endif %}><a href="/alert_logs">Alert logs</a></li>
             </ul>
           </div><!--/.nav-collapse -->
         </div>

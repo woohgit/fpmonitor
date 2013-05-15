@@ -31,7 +31,7 @@ def show_alert_logs(request):
 
 @login_required
 def index(request):
-    node_list = Node.objects.filter(owner=request.user)
+    node_list = Node.objects.filter(owner=request.user).order_by("-status")
     return render(request, 'index.html', {'username': request.user.username, 'node_list': node_list, 'test_mode': settings.TEST_MODE})
 
 
